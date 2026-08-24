@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="堀大輔さんが提唱する1日30分のショートスリーパー論。その魅力と向き合い方を紹介する特設サイト。">
+  <title>30 MINUTES / HORI DAISUKE</title>
+  <style>
+    :root {
+      --ink: #0b0d0d;
+      --paper: #f2efe6;
+      --paper-dark: #e4e0d5;
+      --acid: #caff00;
+      --red: #ff4e3e;
+      --muted: #73766f;
+      --line: rgba(11, 13, 13, 0.18);
+      --sans: "Arial Black", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      --body: "Hiragino Sans", "Yu Gothic", sans-serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --max: 1200px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; overflow-x: hidden; color: var(--ink); background: var(--paper); font-family: var(--body); }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    .wrap { width: min(var(--max), calc(100% - 80px)); margin: 0 auto; }
+    .mono { font-family: var(--mono); letter-spacing: 0.08em; }
+    .kicker { margin: 0; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em; }
+    .kicker::before { display: inline-block; width: 30px; height: 2px; margin: 0 11px 3px 0; background: currentColor; content: ""; }
+    .section { padding: 138px 0; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 40px; margin-bottom: 63px; }
+    .section-head h2 { max-width: 710px; margin: 18px 0 0; font-size: clamp(2.8rem, 7vw, 7rem); font-weight: 900; letter-spacing: -0.12em; line-height: 0.86; }
+    .section-head > p { max-width: 270px; margin: 0 0 3px; color: var(--muted); font-size: 0.76rem; line-height: 1.9; }
+
+    .site-header { position: fixed; top: 0; right: 0; left: 0; z-index: 10; border-bottom: 1px solid transparent; color: var(--paper); mix-blend-mode: difference; transition: background 200ms ease, border-color 200ms ease, mix-blend-mode 200ms ease; }
+    .site-header.scrolled { color: var(--ink); border-color: var(--line); background: rgba(242, 239, 230, 0.9); mix-blend-mode: normal; backdrop-filter: blur(12px); }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; width: min(var(--max), calc(100% - 80px)); height: 82px; margin: 0 auto; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; }
+    .brand-mark { display: inline-grid; width: 25px; height: 25px; place-items: center; border: 2px solid currentColor; border-radius: 50%; font-family: var(--sans); font-size: 0.56rem; font-weight: 900; }
+    .brand-mark::before { content: "30"; }
+    .main-nav { display: flex; gap: 29px; margin-left: auto; margin-right: 34px; }
+    .main-nav a { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em; }
+    .header-button { display: inline-flex; align-items: center; gap: 10px; padding: 11px 13px; border: 1px solid currentColor; font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.08em; }
+    .menu-button { display: none; border: 0; background: transparent; cursor: pointer; }
+    .menu-button span { display: block; width: 24px; height: 2px; margin: 5px 0; background: currentColor; }
+    .mobile-nav { display: none; }
+
+    .hero { position: relative; min-height: 890px; overflow: hidden; color: var(--paper); background: var(--ink); }
+    .hero::before { position: absolute; inset: 0; opacity: 0.24; background-image: linear-gradient(rgba(202,255,0,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(202,255,0,0.2) 1px, transparent 1px); background-size: 64px 64px; content: ""; mask-image: linear-gradient(90deg, black 10%, transparent 73%); }
+    .hero::after { position: absolute; top: -20%; right: -7%; width: 60vw; aspect-ratio: 1; border: 1px solid rgba(202,255,0,0.5); border-radius: 50%; box-shadow: 0 0 0 32px rgba(202,255,0,0.04), 0 0 0 105px rgba(202,255,0,0.03); content: ""; }
+    .hero-inner { position: relative; z-index: 1; display: flex; align-items: center; min-height: 890px; }
+    .hero-copy { max-width: 830px; padding-top: 45px; }
+    .hero-copy .kicker { color: var(--acid); }
+    .hero-title { margin: 29px 0 17px; font-family: var(--sans); font-size: clamp(5.6rem, 17vw, 15rem); font-weight: 900; letter-spacing: -0.15em; line-height: 0.72; }
+    .hero-subtitle { max-width: 700px; margin: 0; color: var(--acid); font-size: clamp(2rem, 5vw, 5rem); font-weight: 900; letter-spacing: -0.1em; line-height: 0.94; }
+    .hero-subtitle em { color: var(--paper); font-style: normal; }
+    .hero-subtitle small { display: inline-block; margin-top: 17px; color: #b3b8ad; font-family: var(--mono); font-size: clamp(0.56rem, 1vw, 0.75rem); font-weight: 400; letter-spacing: 0.08em; line-height: 1.4; }
+    .hero-lede { max-width: 520px; margin: 34px 0 0; color: #b3b8ad; font-size: 0.84rem; line-height: 2.1; }
+    .hero-lede strong { color: var(--paper); }
+    .hero-actions { display: flex; gap: 25px; align-items: center; margin-top: 38px; }
+    .button { display: inline-flex; align-items: center; gap: 18px; padding: 16px 19px; color: var(--ink); background: var(--acid); font-family: var(--mono); font-size: 0.59rem; font-weight: 700; letter-spacing: 0.06em; transition: transform 180ms ease, background 180ms ease; }
+    .button:hover, .button:focus-visible { transform: translateY(-4px); background: var(--paper); }
+    .line-link { color: #b3b8ad; font-family: var(--mono); font-size: 0.59rem; letter-spacing: 0.07em; }
+    .line-link span { margin-left: 8px; color: var(--acid); }
+    .hero-portrait { position: absolute; z-index: 1; top: 21%; right: 10%; width: min(38vw, 455px); aspect-ratio: 1.9 / 1; margin: 0; overflow: hidden; border: 2px solid var(--acid); background: #18201b; box-shadow: 14px 14px 0 var(--red), 0 0 28px rgba(202,255,0,0.55), 0 0 78px rgba(202,255,0,0.24); transform: rotate(2deg); animation: hori-pulse 4.5s ease-in-out infinite; }
+    .hero-portrait::before { position: absolute; z-index: 2; top: 18px; left: 19px; padding: 7px 9px; color: var(--ink); background: var(--acid); content: "PHOTO / HORI"; font-family: var(--mono); font-size: 0.5rem; font-weight: 700; letter-spacing: 0.08em; }
+    .hero-portrait::after { position: absolute; inset: 0; z-index: 1; border: 1px solid rgba(202,255,0,0.8); box-shadow: inset 0 0 32px rgba(202,255,0,0.2); background: linear-gradient(115deg, rgba(202,255,0,0.14), transparent 35%, transparent 72%, rgba(255,78,62,0.16)); content: ""; pointer-events: none; }
+    .hero-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center 39%; filter: saturate(1.06) contrast(1.08) brightness(1.05); }
+    .hero-portrait figcaption { position: absolute; z-index: 2; right: 16px; bottom: 13px; left: 16px; display: flex; justify-content: space-between; color: var(--paper); font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.08em; text-shadow: 0 1px 8px rgba(0,0,0,0.8); }
+    .hero-footer { position: absolute; right: 0; bottom: 44px; left: 0; z-index: 2; display: flex; justify-content: space-between; color: #7f8878; font-family: var(--mono); font-size: 0.53rem; letter-spacing: 0.08em; }
+    .hero-footer strong { color: var(--acid); font-weight: 400; }
+    @keyframes hori-pulse { 0%, 100% { box-shadow: 14px 14px 0 var(--red), 0 0 28px rgba(202,255,0,0.5), 0 0 72px rgba(202,255,0,0.2); } 50% { box-shadow: 14px 14px 0 var(--red), 0 0 40px rgba(202,255,0,0.82), 0 0 105px rgba(202,255,0,0.36); } }
+
+    .ticker { overflow: hidden; border-bottom: 2px solid var(--ink); color: var(--ink); background: var(--acid); }
+    .ticker-track { display: flex; width: max-content; gap: 35px; padding: 15px 0; font-family: var(--mono); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.13em; animation: slide 23s linear infinite; }
+    @keyframes slide { to { transform: translateX(-33.33%); } }
+
+    .photo-section { padding: 117px 0 138px; color: var(--paper); background: #151a16; }
+    .photo-section .kicker { color: var(--acid); }
+    .photo-section h2 { max-width: 640px; margin: 18px 0 20px; font-size: clamp(2.8rem, 6vw, 6.3rem); font-weight: 900; letter-spacing: -0.12em; line-height: 0.88; }
+    .photo-section-intro { max-width: 410px; margin: 0; color: #a4afa0; font-size: 0.76rem; line-height: 1.95; }
+    .photo-grid { display: grid; grid-template-columns: 1.2fr 0.8fr 0.8fr; gap: 12px; margin-top: 51px; }
+    .photo-tile { position: relative; min-height: 405px; margin: 0; overflow: hidden; border: 1px solid rgba(202,255,0,0.55); background: #202820; box-shadow: 0 0 22px rgba(202,255,0,0.22), inset 0 0 38px rgba(202,255,0,0.1); }
+    .photo-tile:nth-child(2), .photo-tile:nth-child(3) { min-height: 330px; align-self: end; }
+    .photo-tile img { display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(1.06) brightness(1.05); transition: transform 600ms ease, filter 600ms ease; }
+    .photo-tile:nth-child(1) img { object-position: 47% center; }
+    .photo-tile:nth-child(2) img { object-position: 53% center; }
+    .photo-tile:nth-child(3) img { object-position: 44% center; }
+    .photo-tile:hover img { transform: scale(1.04); filter: saturate(1.2) brightness(1.1); }
+    .photo-tile::after { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(11,13,13,0.86), transparent 48%); content: ""; pointer-events: none; }
+    .photo-tile figcaption { position: absolute; right: 18px; bottom: 17px; left: 18px; z-index: 1; display: flex; justify-content: space-between; gap: 10px; color: var(--paper); font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.07em; }
+    .photo-credit { margin: 17px 0 0; color: #73806e; font-family: var(--mono); font-size: 0.51rem; letter-spacing: 0.06em; }
+
+    .idea { background: var(--paper); }
+    .idea-layout { display: grid; grid-template-columns: 1fr 0.9fr; gap: 10%; align-items: center; }
+    .idea-copy h2 { max-width: 720px; margin: 19px 0 27px; font-size: clamp(2.8rem, 6vw, 6.6rem); font-weight: 900; letter-spacing: -0.12em; line-height: 0.89; }
+    .idea-copy h2 em { color: var(--red); font-style: normal; }
+    .idea-copy > p { max-width: 540px; margin: 0; color: #565a53; font-size: 0.82rem; line-height: 2.05; }
+    .idea-copy > p + p { margin-top: 15px; color: var(--muted); font-size: 0.69rem; }
+    .idea-data { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 48px; border: 1px solid var(--ink); background: var(--ink); }
+    .data-card { min-height: 122px; padding: 20px 14px; background: var(--paper); }
+    .data-card strong { display: block; margin-bottom: 12px; font-family: var(--mono); font-size: 1.6rem; font-weight: 700; letter-spacing: -0.07em; }
+    .data-card span { color: var(--muted); font-size: 0.58rem; line-height: 1.5; }
+    .dial { position: relative; min-height: 490px; overflow: hidden; padding: 23px; color: var(--paper); background: var(--ink); }
+    .dial::before { position: absolute; top: 14%; right: -22%; width: 89%; aspect-ratio: 1; border: 1px solid var(--acid); border-radius: 50%; box-shadow: 0 0 0 27px rgba(202,255,0,0.07), 0 0 0 72px rgba(202,255,0,0.04); content: ""; }
+    .dial::after { position: absolute; top: 30%; left: 19%; width: 45%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 32% 26%, #fff 0 4%, var(--acid) 7%, #566414 39%, transparent 70%); box-shadow: 0 0 80px rgba(202,255,0,0.25); content: ""; }
+    .dial-top, .dial-bottom { position: relative; z-index: 1; display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.1em; }
+    .dial-top span:last-child { color: var(--acid); }
+    .dial-copy { position: absolute; z-index: 1; right: 23px; bottom: 25px; left: 23px; }
+    .dial-copy strong { display: block; font-size: clamp(2.3rem, 5vw, 5.1rem); font-weight: 900; letter-spacing: -0.12em; line-height: 0.82; }
+    .dial-copy p { max-width: 265px; margin: 19px 0 0; color: #aab1a5; font-size: 0.7rem; line-height: 1.8; }
+    .dial-bottom { position: absolute; right: 23px; bottom: 24px; left: 23px; color: var(--acid); }
+
+    .reasons { color: var(--paper); background: var(--ink); }
+    .reasons .kicker { color: var(--acid); }
+    .reasons .section-head > p { color: #90998a; }
+    .reason-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
+    .reason-card { position: relative; min-height: 375px; padding: 25px; border: 1px solid rgba(242,239,230,0.24); transition: transform 200ms ease, border-color 200ms ease; }
+    .reason-card:hover { transform: translateY(-7px); border-color: var(--acid); }
+    .reason-card::before { position: absolute; right: 25px; bottom: 25px; width: 70px; height: 70px; border: 1px solid var(--acid); border-radius: 50%; opacity: 0.65; content: ""; }
+    .reason-card:nth-child(2)::before { border-radius: 0; transform: rotate(45deg); }
+    .reason-card:nth-child(3)::before { border-color: var(--red); box-shadow: inset 0 0 0 15px rgba(255,78,62,0.15); }
+    .reason-number { display: block; color: var(--acid); font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; }
+    .reason-card h3 { max-width: 240px; margin: 75px 0 15px; font-size: 1.55rem; font-weight: 700; letter-spacing: -0.07em; line-height: 1.05; }
+    .reason-card p { max-width: 280px; margin: 0; color: #9ca597; font-size: 0.71rem; line-height: 1.9; }
+    .reason-card small { position: absolute; right: 25px; bottom: 29px; color: #5d685a; font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.08em; }
+    .quote-panel { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 8%; margin-top: 14px; padding: 31px; border: 1px solid rgba(202,255,0,0.55); background: rgba(202,255,0,0.05); }
+    .quote-label { display: block; color: var(--acid); font-family: var(--mono); font-size: 0.56rem; font-weight: 700; letter-spacing: 0.1em; }
+    .quote-panel h3 { max-width: 520px; margin: 20px 0 0; font-size: clamp(2.4rem, 5vw, 5rem); font-weight: 900; letter-spacing: -0.12em; line-height: 0.9; }
+    .quote-panel h3 em { color: var(--acid); font-style: normal; }
+    .quote-panel blockquote { margin: 0; padding-left: 20px; border-left: 2px solid var(--red); color: var(--paper); font-size: 1rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1.65; }
+    .quote-panel p { max-width: 540px; margin: 17px 0 0; color: #9ca597; font-size: 0.67rem; line-height: 1.9; }
+    .quote-panel cite { display: block; margin-top: 17px; color: var(--acid); font-family: var(--mono); font-size: 0.53rem; font-style: normal; letter-spacing: 0.06em; }
+    .quote-panel cite a { text-decoration: underline; text-decoration-color: var(--acid); text-underline-offset: 4px; }
+
+    .profile { background: var(--paper-dark); }
+    .profile-layout { display: grid; grid-template-columns: 0.7fr 1.3fr; gap: 12%; align-items: start; }
+    .portrait-card { position: relative; min-height: 300px; margin: 0 0 30px; overflow: hidden; border: 2px solid var(--ink); background: var(--ink); box-shadow: 0 0 26px rgba(202,255,0,0.34), inset 0 0 38px rgba(202,255,0,0.12); }
+    .portrait-card::before { position: absolute; top: 16px; right: 16px; width: 47px; height: 47px; border: 1px solid var(--acid); border-radius: 50%; content: ""; }
+    .portrait-card::after { position: absolute; right: -8%; bottom: -34%; width: 72%; aspect-ratio: 1; border: 1px solid rgba(202,255,0,0.6); border-radius: 50%; box-shadow: 0 0 0 24px rgba(202,255,0,0.07); content: ""; }
+    .portrait-card img { position: absolute; right: 12%; bottom: 0; z-index: 1; width: min(72%, 220px); max-height: 92%; object-fit: contain; object-position: bottom center; filter: drop-shadow(0 0 8px rgba(202,255,0,0.75)) drop-shadow(0 0 24px rgba(202,255,0,0.4)); }
+    .portrait-label { position: absolute; z-index: 2; top: 20px; left: 20px; color: var(--acid); font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.08em; }
+    .portrait-card figcaption { position: absolute; z-index: 2; right: 19px; bottom: 17px; left: 19px; color: var(--paper); font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.07em; }
+    .profile-copy h2 { margin: 20px 0 26px; font-size: clamp(2.7rem, 5vw, 5.8rem); font-weight: 900; letter-spacing: -0.12em; line-height: 0.87; }
+    .profile-copy p { max-width: 355px; margin: 0; color: #5c6059; font-size: 0.77rem; line-height: 2; }
+    .profile-copy > .kicker { max-width: none; margin: 0; color: var(--ink); font-family: var(--mono); font-size: 0.68rem; line-height: normal; }
+    .profile-copy .line-link { display: inline-block; margin-top: 33px; color: var(--ink); }
+    .profile-list { border-top: 2px solid var(--ink); }
+    .profile-row { display: grid; grid-template-columns: 140px 1fr 100px; gap: 20px; align-items: center; min-height: 104px; border-bottom: 1px solid var(--line); }
+    .profile-row time { color: var(--red); font-family: var(--mono); font-size: 0.57rem; font-weight: 700; letter-spacing: 0.08em; }
+    .profile-row h3 { margin: 0; font-size: 1.05rem; font-weight: 700; letter-spacing: -0.04em; }
+    .profile-row h3 span { display: block; margin-top: 6px; color: var(--muted); font-size: 0.65rem; font-weight: 400; }
+    .profile-row > span { justify-self: end; color: var(--muted); font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.07em; }
+
+    .caution { padding: 103px 0; color: var(--paper); background: var(--red); }
+    .caution-layout { display: grid; grid-template-columns: 1fr 0.8fr; gap: 12%; align-items: end; }
+    .caution h2 { max-width: 670px; margin: 19px 0 0; font-size: clamp(2.7rem, 6vw, 6.2rem); font-weight: 900; letter-spacing: -0.13em; line-height: 0.87; }
+    .caution-copy p { max-width: 400px; margin: 0; color: rgba(242,239,230,0.88); font-size: 0.77rem; line-height: 2; }
+    .caution-copy p + p { margin-top: 16px; color: rgba(242,239,230,0.68); font-size: 0.65rem; }
+    .source-box { padding: 22px; border: 1px solid rgba(242,239,230,0.55); }
+    .source-box p { margin: 0 0 16px; color: var(--paper); font-family: var(--mono); font-size: 0.57rem; line-height: 1.8; }
+    .source-box a { display: block; padding: 13px 0; border-top: 1px solid rgba(242,239,230,0.28); color: var(--paper); font-size: 0.66rem; }
+    .source-box a span { float: right; color: var(--acid); }
+
+    footer { padding: 38px 0 27px; color: var(--paper); background: var(--ink); }
+    .footer-top, .footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .footer-logo { margin: 0; color: var(--acid); font-family: var(--sans); font-size: 1.8rem; font-weight: 900; letter-spacing: -0.11em; }
+    .footer-copy, .footer-bottom { font-family: var(--mono); font-size: 0.51rem; letter-spacing: 0.07em; }
+    .footer-copy { margin: 0; color: #889385; }
+    .footer-bottom { margin-top: 55px; color: #778173; }
+    .footer-bottom a { color: var(--acid); }
+
+    .reveal { opacity: 0; transform: translateY(25px); transition: opacity 700ms ease, transform 700ms ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } .reveal { opacity: 1; transform: none; } }
+
+    @media (max-width: 880px) {
+      .wrap, .header-inner { width: min(var(--max), calc(100% - 48px)); }
+      .main-nav, .header-button { display: none; }
+      .menu-button { display: block; }
+      .mobile-nav { position: absolute; top: 82px; right: 24px; left: 24px; display: grid; max-height: 0; overflow: hidden; border: 1px solid transparent; background: rgba(11,13,13,0.96); color: var(--paper); opacity: 0; transition: max-height 220ms ease, opacity 180ms ease, border-color 180ms ease; }
+      .mobile-nav.open { max-height: 270px; border-color: rgba(202,255,0,0.55); opacity: 1; }
+      .mobile-nav a { padding: 16px 19px; border-bottom: 1px solid rgba(242,239,230,0.18); font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em; }
+      .mobile-nav a:last-child { border-bottom: 0; }
+      .hero::after { right: -23%; width: 78vw; }
+      .hero-portrait { right: 3%; width: 47vw; opacity: 0.95; }
+      .idea-layout, .profile-layout, .caution-layout { grid-template-columns: 1fr; gap: 60px; }
+      .photo-grid { grid-template-columns: 1.2fr 0.8fr; }
+      .photo-tile:nth-child(3) { grid-column: span 2; min-height: 260px; }
+      .reason-grid { grid-template-columns: 1fr 1fr; }
+      .reason-card:last-child { grid-column: span 2; }
+      .quote-panel { grid-template-columns: 1fr; gap: 32px; }
+    }
+
+    @media (max-width: 600px) {
+      .wrap, .header-inner { width: calc(100% - 36px); }
+      .section { padding: 100px 0; }
+      .section-head { display: block; margin-bottom: 47px; }
+      .section-head > p { margin-top: 22px; }
+      .hero { min-height: 800px; }
+      .hero-inner { min-height: 800px; align-items: end; padding-bottom: 117px; }
+      .hero-title { font-size: clamp(4.7rem, 20vw, 7rem); }
+      .hero-lede { font-size: 0.74rem; }
+      .hero-actions { align-items: flex-start; flex-direction: column; gap: 22px; margin-top: 31px; }
+      .hero-portrait { top: 143px; right: -18px; width: 62vw; box-shadow: 8px 8px 0 var(--red), 0 0 24px rgba(202,255,0,0.55), 0 0 62px rgba(202,255,0,0.24); transform: rotate(2deg); }
+      .hero-footer { bottom: 31px; font-size: 0.47rem; }
+      .hero-footer span:nth-child(2) { display: none; }
+      .idea-copy h2 { font-size: 3.2rem; }
+      .idea-data { grid-template-columns: 1fr 1fr 1fr; }
+      .data-card { padding: 16px 9px; }
+      .data-card strong { font-size: 1.18rem; }
+      .data-card span { font-size: 0.48rem; }
+      .dial { min-height: 400px; }
+      .photo-section { padding: 88px 0 100px; }
+      .photo-grid { grid-template-columns: 1fr; gap: 9px; margin-top: 38px; }
+      .photo-tile, .photo-tile:nth-child(2), .photo-tile:nth-child(3) { min-height: 300px; }
+      .photo-tile:nth-child(3) { grid-column: auto; }
+      .reason-grid { grid-template-columns: 1fr; gap: 9px; }
+      .reason-card:last-child { grid-column: auto; }
+      .reason-card { min-height: 320px; }
+      .reason-card h3 { margin-top: 56px; }
+      .quote-panel { padding: 22px; }
+      .quote-panel blockquote { font-size: 0.9rem; }
+      .portrait-card { min-height: 270px; }
+      .profile-row { grid-template-columns: 85px 1fr; gap: 14px; min-height: 110px; }
+      .profile-row > span { display: none; }
+      .caution { padding: 84px 0; }
+      .footer-top, .footer-bottom { align-items: flex-start; flex-direction: column; }
+      .footer-bottom { gap: 13px; margin-top: 40px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="ショートスリーパーサイトのトップへ"><span class="brand-mark" aria-hidden="true"></span>HORI / SHORT SLEEP</a>
+      <nav class="main-nav" aria-label="メインナビゲーション"><a href="#idea">THE IDEA</a><a href="#photos">PHOTOS</a><a href="#reasons">WHY 30 MIN?</a><a href="#profile">PROFILE</a></nav>
+      <a class="header-button" href="#caution">SOURCE / CARE ↘</a>
+      <button class="menu-button" id="menu-button" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="モバイルナビゲーション"><a href="#idea">01 / THE IDEA</a><a href="#photos">02 / PHOTOS</a><a href="#reasons">03 / WHY 30 MIN?</a><a href="#profile">04 / PROFILE</a><a href="#caution">05 / SOURCE / CARE</a></nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap hero-inner"><div class="hero-copy reveal"><p class="kicker">THE SHORT SLEEPER FILE / HORI DAISUKE</p><h1 class="hero-title" id="hero-title">HORI</h1><p class="hero-subtitle">一日30分睡眠は、<br><em>健康だ。</em><small>— 堀大輔さんの主張</small></p><p class="hero-lede">堀大輔さんが発信する、<strong>「一日30分睡眠は健康だ」</strong>という主張。その短眠の魅力を、時間の使い方と生活の設計から読み解きます。(ง •̀_•́)ง</p><div class="hero-actions"><a class="button" href="#reasons">30分の主張を読む <span aria-hidden="true">↘</span></a><a class="line-link" href="#caution">大切な注意点も見る <span aria-hidden="true">→</span></a></div></div></div>
+      <figure class="hero-portrait"><img src="assets/hori-persol.jpg" alt="堀大輔さんの顔写真"><figcaption><span>HORI DAISUKE</span><span>PHOTO / PERSOL</span></figcaption></figure>
+      <div class="wrap hero-footer"><span>HORI DAISUKE / <strong>NATURE SLEEP</strong></span><span>THE IDEA OF 30 MINUTES</span><span>01 — 04</span></div>
+    </section>
+
+    <div class="ticker" aria-hidden="true"><div class="ticker-track"><span>SHORT SLEEP / BIG LIFE</span><span>●</span><span>時間を再設計する</span><span>✦</span><span>無理はしない ( ˘ω˘ )</span><span>●</span><span>SHORT SLEEP / BIG LIFE</span><span>●</span><span>時間を再設計する</span><span>✦</span><span>無理はしない ( ˘ω˘ )</span><span>●</span></div></div>
+
+    <section class="photo-section" id="photos"><div class="wrap"><p class="kicker reveal">02 / PHOTOS / IN FOCUS</p><h2 class="reveal">語る人の、<br>表情を見る。</h2><p class="photo-section-intro reveal">1日30分睡眠という考え方を、自分の言葉で語る堀大輔さん。表情、姿勢、身振りからも、探究を続ける人の熱量が伝わります。(｀・ω・´)</p><div class="photo-grid"><figure class="photo-tile reveal"><img src="assets/hori-persol-01.jpg" alt="インタビュー中に語る堀大輔さん"><figcaption><span>INTERVIEW / 01</span><span>PHOTO / PERSOL</span></figcaption></figure><figure class="photo-tile reveal"><img src="assets/hori-persol-02.jpg" alt="インタビュー中に話す堀大輔さん"><figcaption><span>INTERVIEW / 02</span><span>HORI DAISUKE</span></figcaption></figure><figure class="photo-tile reveal"><img src="assets/hori-persol-03.jpg" alt="笑顔で話す堀大輔さん"><figcaption><span>INTERVIEW / 03</span><span>PHOTO / PERSOL</span></figcaption></figure></div><p class="photo-credit reveal">PHOTO SOURCE: <a href="https://studio.persol-group.co.jp/kininaru/240610-1" target="_blank" rel="noreferrer">STUDIO PERSOL / 取材記事</a></p></div></section>
+
+    <section class="section idea" id="idea"><div class="wrap"><div class="idea-layout"><div class="idea-copy reveal"><p class="kicker">01 / THE IDEA</p><h2>眠りを、<em>才能</em>で終わらせない。</h2><p>堀大輔さんの魅力は、ショートスリーパーを一言の神秘で終わらせず、睡眠の仕組み・習慣・時間の使い方を考えるテーマとして開いたこと。公式プロフィールでは、18歳から睡眠研究を始め、7年の研究と試行錯誤を経て「Nature sleep」プログラムを開発したと紹介されています。探究心がすごい。(ﾟДﾟ)ﾉ</p><p>これは、堀さんの主張と活動を紹介するファンサイトです。短眠の実現可能性や安全性には個人差があります。</p><div class="idea-data"><div class="data-card"><strong>18 →</strong><span>RESEARCH START<br>睡眠研究を始めた年齢</span></div><div class="data-card"><strong>7 YEARS</strong><span>TRIAL &amp; ERROR<br>研究と試行錯誤</span></div><div class="data-card"><strong>30 MIN</strong><span>THE CLAIM<br>堀さんが発信する短眠</span></div></div></div><article class="dial reveal" aria-label="1日30分睡眠をイメージしたグラフィック"><div class="dial-top"><span>HORI FILE / 001</span><span>FOCUS</span></div><div class="dial-copy"><strong>WAKE UP<br>YOUR<br>TIME.</strong><p>30分という数字の先にあるのは、起きている時間をどう生きるかという問い。( ･`ω･´)</p></div><div class="dial-bottom"><span>NATURE SLEEP</span><span>◒ 03:17:42</span></div></article></div></div></section>
+
+    <section class="section reasons" id="reasons"><div class="wrap"><div class="section-head reveal"><div><p class="kicker">03 / WHY 30 MIN?</p><h2>なぜ、<br>惹かれるのか。</h2></div><p>堀さんの短眠論が投げかける、3つの魅力。もちろん、根性論だけではありません。(｀・ω・´)</p></div><div class="reason-grid"><article class="reason-card reveal"><span class="reason-number">01 / TIME</span><h3>人生の余白が、<br>増える。</h3><p>起きている時間を増やせるなら、学び、仕事、創作、家族との時間に新しい選択肢が生まれる。時間を資源として見直す発想です。</p><small>MORE HOURS / MORE CHOICES</small></article><article class="reason-card reveal"><span class="reason-number">02 / DESIGN</span><h3>睡眠を、<br>設計する。</h3><p>寝つき・寝起き・日中の眠気・生活リズム。睡眠を運任せにせず、仕組みとして観察する視点が面白い。(ง •̀_•́)ง</p><small>OBSERVE / ADJUST / REPEAT</small></article><article class="reason-card reveal"><span class="reason-number">03 / COURAGE</span><h3>常識を疑う、<br>勇気。</h3><p>「みんな同じ」が本当に自分に合うのかを問い直す。挑戦する姿勢そのものが、生活を変えるきっかけになります。🤡</p><small>QUESTION THE DEFAULT</small></article></div><div class="quote-panel reveal"><div><span class="quote-label">HORI'S CLAIM / 一日30分睡眠</span><h3>一日30分睡眠は、<br><em>健康だ。</em></h3></div><div><blockquote>堀大輔さんは、一日30分程度の睡眠でも、健康的に活動できると主張しています。</blockquote><p>これは堀大輔さんの発言・問題提起を、本人の見解として最大限尊重して紹介するものです。誰にでも当てはまる医学的事実としての断定ではなく、体調や眠気に異変がある場合は睡眠を削らないでください。</p><cite><a href="https://studio.persol-group.co.jp/kininaru/240610-1" target="_blank" rel="noreferrer">STATEMENT / AS REPORTED IN STUDIO PERSOL ↗</a></cite></div></div></div></section>
+
+    <section class="section profile" id="profile"><div class="wrap"><div class="profile-layout"><div class="profile-copy reveal"><figure class="portrait-card"><span class="portrait-label">OFFICIAL PROFILE / HORI DAISUKE</span><img src="assets/hori-daisuke.png" alt="堀大輔さんの公式プロフィール写真"><figcaption>Hori Daisuke / Short Sleeper</figcaption></figure><p class="kicker">04 / PROFILE</p><h2>堀大輔さんの、<br>異色の探究。</h2><p>公式プロフィールでは、音楽、油絵、ギター製作を経て、睡眠研究へ。分野をまたいで「仕組み」を考え続ける経歴が、短眠への向き合い方にも独自の輪郭を与えています。</p><a class="line-link" href="https://short-sleeper.or.jp/lecturer/" target="_blank" rel="noreferrer">公式プロフィールを見る <span>↗</span></a></div><div class="profile-list reveal"><div class="profile-row"><time>ORIGIN / 01</time><h3>18歳から睡眠を研究<span>好奇心 — 仕組みを知りたい</span></h3><span>READ 01:18</span></div><div class="profile-row"><time>METHOD / 02</time><h3>7年の研究と試行錯誤<span>Nature sleep — 独自プログラム</span></h3><span>READ 03:45</span></div><div class="profile-row"><time>EDUCATE / 03</time><h3>学びを、人に伝える<span>講演・配信・睡眠改善</span></h3><span>READ 05:20</span></div><div class="profile-row"><time>QUESTION / 04</time><h3>短眠を、問いとして開く<span>自分の時間をどう使うか</span></h3><span>READ 07:07</span></div></div></div></div></section>
+
+    <section class="caution" id="caution"><div class="wrap caution-layout"><div class="caution-copy reveal"><p class="kicker">05 / SOURCE / CARE</p><h2>短くする前に、<br>自分を知る。</h2></div><div class="source-box reveal"><p>IMPORTANT / 睡眠は個人差があります。<br>30分睡眠が誰にでも安全・適切という意味ではありません。</p><p>厚生労働省の「健康づくりのための睡眠ガイド2023」では、成人はおおよそ6〜8時間、少なくとも6時間以上の睡眠時間を確保することが推奨されています。急に睡眠を削らず、眠気や不調があるときは休んでください。( ˘ω˘ )</p><a href="https://short-sleeper.or.jp/lecturer/" target="_blank" rel="noreferrer">堀大輔さん / 公式プロフィール <span>↗</span></a><a href="https://studio.persol-group.co.jp/kininaru/240610-1" target="_blank" rel="noreferrer">顔写真・取材記事 / スタジオパーソル <span>↗</span></a><a href="https://www.mhlw.go.jp/content/001305530.pdf" target="_blank" rel="noreferrer">厚生労働省 / 睡眠ガイド2023 <span>↗</span></a></div></div></section>
+  </main>
+
+  <footer><div class="wrap"><div class="footer-top"><p class="footer-logo">30 / HORI</p><p class="footer-copy">A FAN-MADE INTRODUCTION TO THE SHORT SLEEPER IDEA</p></div><div class="footer-bottom"><span>© 30 MINUTES GUIDE</span><span>PHOTO / OFFICIAL PROFILE + STUDIO PERSOL</span><a href="#top">BACK TO TOP ↑</a></div></div></footer>
+
+  <script>
+    const header = document.querySelector("#site-header");
+    const menuButton = document.querySelector("#menu-button");
+    const mobileNav = document.querySelector("#mobile-nav");
+    const updateHeader = () => header.classList.toggle("scrolled", window.scrollY > 24);
+    updateHeader();
+    window.addEventListener("scroll", updateHeader, { passive: true });
+    menuButton.addEventListener("click", () => {
+      const open = mobileNav.classList.toggle("open");
+      menuButton.setAttribute("aria-expanded", String(open));
+      menuButton.setAttribute("aria-label", open ? "メニューを閉じる" : "メニューを開く");
+    });
+    mobileNav.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => {
+      mobileNav.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
+      menuButton.setAttribute("aria-label", "メニューを開く");
+    }));
+    const revealItems = document.querySelectorAll(".reveal");
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries, revealObserver) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("visible");
+          revealObserver.unobserve(entry.target);
+        });
+      }, { threshold: 0.12 });
+      revealItems.forEach((item, index) => {
+        item.style.transitionDelay = `${Math.min(index % 5, 4) * 70}ms`;
+        observer.observe(item);
+      });
+    } else {
+      revealItems.forEach((item) => item.classList.add("visible"));
+    }
+  </script>
+</body>
+</html>
