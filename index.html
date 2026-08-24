@@ -1,93 +1,553 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VIVANTまとめ</title>
+  <meta name="description" content="日曜劇場『VIVANT』を、物語・人物・組織から読み解くネタバレ配慮の作品ガイド。">
+  <title>VIVANT — THE CASE FILE</title>
   <style>
     :root {
-      color-scheme: light;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: #1f2937;
-      background: #f3f4f6;
+      --black: #070707;
+      --black-soft: #101010;
+      --ink: #f2f0e9;
+      --muted: #aaa8a0;
+      --muted-dark: #6e6d67;
+      --red: #e30b10;
+      --red-deep: #8e090b;
+      --sand: #c49b63;
+      --sand-light: #efca88;
+      --line: rgba(242, 240, 233, 0.17);
+      --line-red: rgba(227, 11, 16, 0.45);
+      --max: 1240px;
+      font-family: "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: var(--ink);
+      background: var(--black);
+      font-synthesis: none;
     }
 
-    body {
-      display: grid;
-      min-height: 100vh;
-      margin: 0;
-      place-items: center;
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; overflow-x: hidden; background: var(--black); }
+    body::before {
+      position: fixed;
+      z-index: 30;
+      inset: 0;
+      opacity: 0.065;
+      pointer-events: none;
+      content: "";
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.52'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
     }
+    a { color: inherit; text-decoration: none; }
+    button { color: inherit; font: inherit; }
+    ::selection { color: white; background: var(--red); }
 
-    main {
-      width: min(90%, 640px);
-      padding: 3rem 2rem;
-      text-align: center;
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 12px 32px rgb(15 23 42 / 10%);
+    .site-header { position: fixed; z-index: 20; top: 0; width: 100%; border-bottom: 1px solid rgba(242, 240, 233, 0.15); background: linear-gradient(180deg, rgba(7, 7, 7, 0.86), transparent); transition: background 220ms ease, border-color 220ms ease; }
+    .site-header.scrolled { border-color: var(--line); background: rgba(7, 7, 7, 0.92); backdrop-filter: blur(18px); }
+    .header-inner, .wrap { width: min(var(--max), calc(100% - 80px)); margin: 0 auto; }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; min-height: 78px; }
+    .brand { display: inline-flex; align-items: center; gap: 12px; font-family: Arial, sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em; }
+    .brand-mark { width: 15px; height: 15px; transform: rotate(45deg); border: 1px solid var(--red); box-shadow: inset 0 0 0 3px var(--black); outline: 1px solid rgba(227, 11, 16, 0.4); }
+    .main-nav { display: flex; align-items: center; gap: 29px; color: var(--muted); font-family: Arial, sans-serif; font-size: 0.61rem; letter-spacing: 0.15em; }
+    .main-nav a { position: relative; padding: 12px 0; transition: color 180ms ease; }
+    .main-nav a::after { position: absolute; right: 0; bottom: 3px; left: 0; height: 1px; transform: scaleX(0); transform-origin: right; background: var(--red); content: ""; transition: transform 180ms ease; }
+    .main-nav a:hover, .main-nav a:focus-visible { color: var(--ink); }
+    .main-nav a:hover::after, .main-nav a:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+    .header-cta { display: inline-flex; align-items: center; gap: 9px; border: 1px solid var(--red); padding: 10px 12px 10px 15px; color: var(--ink); font-family: Arial, sans-serif; font-size: 0.58rem; letter-spacing: 0.13em; transition: color 180ms ease, background 180ms ease; }
+    .header-cta:hover, .header-cta:focus-visible { color: white; background: var(--red); }
+    .header-cta span { color: var(--red); font-size: 0.9rem; }
+    .header-cta:hover span, .header-cta:focus-visible span { color: white; }
+    .menu-button { display: none; border: 0; padding: 8px 0 8px 8px; background: none; cursor: pointer; }
+    .menu-button span { display: block; width: 25px; height: 1px; margin: 5px 0; background: var(--ink); transition: transform 180ms ease; }
+    .mobile-nav { display: none; }
+
+    .hero { position: relative; min-height: 900px; overflow: hidden; background: var(--black); }
+    .hero-media { position: absolute; inset: 0 0 0 24%; overflow: hidden; }
+    .hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center; filter: saturate(0.84) contrast(1.05); transform: scale(1.025); transition: transform 1.5s cubic-bezier(.2,.65,.25,1); }
+    .hero:hover .hero-media img { transform: scale(1.065); }
+    .hero::before { position: absolute; z-index: 1; inset: 0; content: ""; background: linear-gradient(90deg, #070707 0%, rgba(7, 7, 7, 0.94) 22%, rgba(7, 7, 7, 0.55) 54%, rgba(7, 7, 7, 0.2) 77%, rgba(7, 7, 7, 0.7) 100%), linear-gradient(0deg, var(--black) 0%, transparent 30%, rgba(7, 7, 7, 0.18) 100%); }
+    .hero::after { position: absolute; z-index: 1; top: 0; right: 10%; width: 1px; height: 100%; background: linear-gradient(transparent 8%, var(--line-red) 32%, transparent 88%); content: ""; }
+    .hero-grid { position: absolute; z-index: 1; inset: 0; opacity: 0.16; pointer-events: none; background-image: linear-gradient(rgba(242, 240, 233, 0.11) 1px, transparent 1px), linear-gradient(90deg, rgba(242, 240, 233, 0.11) 1px, transparent 1px); background-size: 90px 90px; mask-image: linear-gradient(90deg, transparent, black 35%, black 72%, transparent); }
+    .hero-inner { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(500px, 0.92fr) 1.08fr; align-items: center; min-height: 900px; padding-top: 67px; }
+    .hero-copy { max-width: 640px; }
+    .eyebrow { display: flex; align-items: center; gap: 13px; margin: 0 0 24px; color: var(--sand-light); font-family: Arial, sans-serif; font-size: 0.59rem; font-weight: 700; letter-spacing: 0.28em; }
+    .eyebrow::before { width: 36px; height: 1px; background: var(--red); content: ""; }
+    .hero-title { margin: 0; color: var(--red); font-family: Arial, sans-serif; font-size: clamp(5rem, 11.5vw, 10.8rem); font-weight: 800; letter-spacing: 0.055em; line-height: 0.76; text-shadow: 0 0 44px rgba(227, 11, 16, 0.13); }
+    .hero-subtitle { margin: 29px 0 0; color: var(--ink); font-family: "Yu Mincho", "Hiragino Mincho ProN", serif; font-size: clamp(1.05rem, 2vw, 1.48rem); font-weight: 400; letter-spacing: 0.31em; line-height: 1.7; }
+    .hero-lede { max-width: 485px; margin: 29px 0 0; color: #c3c2bb; font-size: 0.84rem; line-height: 2.15; }
+    .hero-actions { display: flex; align-items: center; gap: 22px; margin-top: 33px; }
+    .button { display: inline-flex; align-items: center; gap: 18px; border: 1px solid var(--red); padding: 14px 18px 14px 21px; color: white; background: var(--red); font-family: Arial, sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.15em; transition: gap 180ms ease, color 180ms ease, background 180ms ease; }
+    .button:hover, .button:focus-visible { gap: 25px; color: var(--red); background: transparent; }
+    .button span { font-size: 1rem; line-height: 0.5; }
+    .text-link { display: inline-flex; align-items: center; gap: 11px; color: var(--muted); font-family: Arial, sans-serif; font-size: 0.61rem; letter-spacing: 0.12em; transition: gap 180ms ease, color 180ms ease; }
+    .text-link:hover, .text-link:focus-visible { gap: 17px; color: var(--ink); }
+    .hero-data { display: grid; grid-template-columns: repeat(3, 1fr); max-width: 580px; margin-top: 51px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .hero-data-item { padding: 17px 17px 16px 0; }
+    .hero-data-item + .hero-data-item { border-left: 1px solid var(--line); padding-left: 18px; }
+    .data-label { display: block; margin-bottom: 7px; color: var(--muted-dark); font-family: Arial, sans-serif; font-size: 0.54rem; letter-spacing: 0.17em; }
+    .data-value { color: var(--ink); font-size: 0.75rem; }
+    .hero-notice { align-self: end; justify-self: end; width: 246px; margin: 0 12% 66px 0; padding: 18px; border: 1px solid var(--line); background: rgba(7, 7, 7, 0.5); backdrop-filter: blur(8px); }
+    .hero-notice::before { display: block; width: 26px; height: 3px; margin-bottom: 15px; background: var(--red); content: ""; }
+    .notice-code { display: block; margin-bottom: 11px; color: var(--sand); font-family: Arial, sans-serif; font-size: 0.54rem; letter-spacing: 0.18em; }
+    .hero-notice strong { display: block; margin-bottom: 10px; color: var(--ink); font-family: "Yu Mincho", serif; font-size: 1.03rem; font-weight: 400; letter-spacing: 0.1em; line-height: 1.7; }
+    .hero-notice p { margin: 0; color: var(--muted); font-size: 0.64rem; line-height: 1.75; }
+    .hero-vertical { position: absolute; right: 5.5%; bottom: 53px; z-index: 3; color: rgba(242, 240, 233, 0.6); font-family: Arial, sans-serif; font-size: 0.57rem; letter-spacing: 0.22em; writing-mode: vertical-rl; }
+    .hero-vertical::before { display: inline-block; width: 1px; height: 53px; margin-bottom: 17px; background: var(--red); content: ""; }
+
+    .section { position: relative; padding: 137px 0; }
+    .section-black { background: var(--black); }
+    .section-charcoal { background: var(--black-soft); }
+    .section-header { position: relative; display: flex; align-items: end; justify-content: space-between; gap: 35px; margin-bottom: 51px; }
+    .section-kicker { margin: 0 0 12px; color: var(--red); font-family: Arial, sans-serif; font-size: 0.59rem; font-weight: 700; letter-spacing: 0.24em; }
+    .section-kicker span { margin-left: 8px; color: var(--muted-dark); font-weight: 400; }
+    h2 { margin: 0; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif; font-size: clamp(2.1rem, 4vw, 3.6rem); font-weight: 400; letter-spacing: 0.12em; line-height: 1.35; }
+    .section-desc { width: min(370px, 100%); margin: 0 0 5px; color: var(--muted); font-size: 0.75rem; line-height: 2; text-align: right; }
+    .section-rule { height: 1px; margin-bottom: 60px; background: linear-gradient(90deg, var(--line-red), transparent 65%); }
+    .section-stamp { position: absolute; right: 0; top: 0; color: rgba(242, 240, 233, 0.045); font-family: Arial, sans-serif; font-size: clamp(5rem, 12vw, 10rem); font-weight: 800; letter-spacing: -0.09em; line-height: 0.8; pointer-events: none; }
+
+    .overview { display: grid; grid-template-columns: minmax(0, 0.88fr) minmax(330px, 1.12fr); gap: 9%; align-items: center; }
+    .overview-lead { margin: 0; color: var(--ink); font-family: "Yu Mincho", serif; font-size: clamp(1.35rem, 2.8vw, 2.15rem); letter-spacing: 0.1em; line-height: 1.75; }
+    .overview-body { margin: 29px 0 0; color: var(--muted); font-size: 0.82rem; line-height: 2.15; }
+    .overview-body strong { color: var(--sand-light); font-weight: 400; }
+    .case-line { display: flex; align-items: center; gap: 14px; margin-top: 37px; color: var(--sand); font-family: Arial, sans-serif; font-size: 0.57rem; letter-spacing: 0.17em; }
+    .case-line::before { width: 43px; height: 1px; background: var(--red); content: ""; }
+    .overview-visual { position: relative; min-height: 455px; padding: 16px; background: var(--red); }
+    .overview-visual::before { position: absolute; top: -13px; left: -13px; width: 72px; height: 72px; border-top: 1px solid var(--sand); border-left: 1px solid var(--sand); content: ""; }
+    .overview-visual::after { position: absolute; right: -13px; bottom: -13px; width: 72px; height: 72px; border-right: 1px solid var(--sand); border-bottom: 1px solid var(--sand); content: ""; }
+    .overview-visual img { display: block; width: 100%; height: 100%; min-height: 423px; object-fit: cover; object-position: center; filter: saturate(0.84) contrast(1.03); }
+    .visual-caption { position: absolute; right: 28px; bottom: 27px; left: 28px; display: flex; justify-content: space-between; gap: 10px; color: white; font-family: Arial, sans-serif; font-size: 0.55rem; letter-spacing: 0.16em; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6); }
+    .fact-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-top: 100px; border: 1px solid var(--line); background: var(--line); }
+    .fact { min-height: 142px; padding: 25px 22px; background: var(--black-soft); }
+    .fact-number { display: block; margin-bottom: 20px; color: var(--red); font-family: Arial, sans-serif; font-size: 0.68rem; letter-spacing: 0.14em; }
+    .fact strong { display: block; margin-bottom: 7px; color: var(--sand-light); font-family: Arial, sans-serif; font-size: 2rem; font-weight: 400; line-height: 0.9; }
+    .fact span { color: var(--muted); font-size: 0.63rem; letter-spacing: 0.08em; }
+
+    .experience { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .experience-card { position: relative; min-height: 290px; padding: 27px; overflow: hidden; border: 1px solid var(--line); background: #0d0d0d; transition: transform 220ms ease, border-color 220ms ease; }
+    .experience-card:hover { transform: translateY(-7px); border-color: var(--line-red); }
+    .experience-card::after { position: absolute; right: -28px; bottom: -52px; width: 170px; height: 170px; border: 1px solid rgba(227, 11, 16, 0.24); border-radius: 50%; content: ""; }
+    .experience-card:nth-child(2)::after { border-radius: 0; transform: rotate(45deg); }
+    .experience-number { display: block; margin-bottom: 58px; color: var(--red); font-family: Arial, sans-serif; font-size: 0.59rem; letter-spacing: 0.18em; }
+    .experience-card h3 { position: relative; z-index: 1; margin: 0 0 13px; font-family: "Yu Mincho", serif; font-size: 1.3rem; font-weight: 400; letter-spacing: 0.13em; }
+    .experience-card p { position: relative; z-index: 1; max-width: 285px; margin: 0; color: var(--muted); font-size: 0.72rem; line-height: 1.9; }
+    .experience-card small { position: absolute; right: 27px; bottom: 27px; z-index: 1; color: var(--muted-dark); font-family: Arial, sans-serif; font-size: 0.5rem; letter-spacing: 0.1em; }
+
+    .cast-intro { display: flex; align-items: end; justify-content: space-between; gap: 25px; margin-bottom: 42px; }
+    .cast-intro p { max-width: 420px; margin: 0; color: var(--muted); font-size: 0.78rem; line-height: 1.95; }
+    .cast-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
+    .cast-card { position: relative; aspect-ratio: 2 / 1; min-height: 0; padding: 0; overflow: hidden; border: 1px solid var(--line); background: #181818; cursor: pointer; text-align: left; transition: transform 220ms ease, border-color 220ms ease; }
+    .cast-card:hover, .cast-card:focus-visible { transform: translateY(-7px); border-color: var(--red); outline: none; }
+    .cast-card img { display: block; width: 100%; height: 100%; min-height: 0; object-fit: cover; transition: transform 500ms ease, filter 500ms ease; }
+    .cast-card:hover img, .cast-card:focus-visible img { transform: scale(1.04); filter: saturate(1.1); }
+    .cast-card::after { position: absolute; inset: 0; content: ""; background: linear-gradient(0deg, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.08) 56%, rgba(0, 0, 0, 0.04) 100%); pointer-events: none; }
+    .cast-meta { position: absolute; right: 22px; bottom: 21px; left: 22px; z-index: 1; }
+    .cast-index { display: block; margin-bottom: 9px; color: var(--sand-light); font-family: Arial, sans-serif; font-size: 0.54rem; letter-spacing: 0.19em; }
+    .cast-meta h3 { margin: 0 0 6px; color: white; font-family: "Yu Mincho", serif; font-size: 1.38rem; font-weight: 400; letter-spacing: 0.14em; }
+    .cast-meta p { margin: 0; color: #d0cec7; font-size: 0.65rem; letter-spacing: 0.11em; }
+    .cast-arrow { position: absolute; top: 18px; right: 19px; z-index: 2; display: grid; width: 27px; height: 27px; place-items: center; border: 1px solid rgba(255, 255, 255, 0.48); border-radius: 50%; color: white; font-size: 0.87rem; transition: background 180ms ease, color 180ms ease; }
+    .cast-card:hover .cast-arrow, .cast-card:focus-visible .cast-arrow { color: var(--red); background: white; }
+    .cast-footnote { display: flex; align-items: center; gap: 14px; margin-top: 28px; color: var(--muted-dark); font-family: Arial, sans-serif; font-size: 0.54rem; letter-spacing: 0.12em; }
+    .cast-footnote::before { width: 38px; height: 1px; background: var(--line-red); content: ""; }
+
+    .world-section { overflow: hidden; background: #121212; }
+    .world-section::before { position: absolute; top: 40px; right: -160px; width: 520px; height: 520px; border: 1px solid rgba(227, 11, 16, 0.23); border-radius: 50%; content: ""; }
+    .world-section::after { position: absolute; top: 292px; right: 8%; width: 640px; height: 1px; transform: rotate(-40deg); background: var(--line-red); content: ""; }
+    .world-layout { position: relative; z-index: 1; display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 10%; align-items: start; }
+    .world-copy h2 { max-width: 470px; }
+    .world-copy > p { max-width: 390px; margin: 27px 0 0; color: var(--muted); font-size: 0.8rem; line-height: 2.1; }
+    .world-copy .classified { display: inline-flex; align-items: center; gap: 10px; margin-top: 38px; color: var(--red); font-family: Arial, sans-serif; font-size: 0.57rem; letter-spacing: 0.19em; }
+    .classified::before { width: 7px; height: 7px; border-radius: 50%; background: var(--red); box-shadow: 0 0 17px var(--red); content: ""; }
+    .org-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .org-card { position: relative; min-height: 173px; padding: 24px; border: 1px solid var(--line); background: rgba(7, 7, 7, 0.64); transition: border-color 180ms ease, background 180ms ease; }
+    .org-card:hover { border-color: var(--line-red); background: rgba(30, 8, 8, 0.6); }
+    .org-card::before { position: absolute; top: 0; bottom: 0; left: 0; width: 3px; background: var(--org-color, var(--red)); content: ""; }
+    .org-code { display: block; margin-bottom: 24px; color: var(--muted-dark); font-family: Arial, sans-serif; font-size: 0.54rem; letter-spacing: 0.2em; }
+    .org-card h3 { margin: 0 0 8px; font-family: "Yu Mincho", serif; font-size: 1.2rem; font-weight: 400; letter-spacing: 0.13em; }
+    .org-card p { margin: 0; color: var(--muted); font-size: 0.68rem; line-height: 1.75; }
+    .spoiler-tools { position: relative; z-index: 1; margin-top: 66px; padding: 26px 0 0; border-top: 1px solid var(--line); }
+    .spoiler-button { display: inline-flex; align-items: center; gap: 12px; border: 1px solid var(--line-red); padding: 11px 14px; color: var(--red); background: transparent; cursor: pointer; font-family: Arial, sans-serif; font-size: 0.57rem; letter-spacing: 0.17em; transition: color 180ms ease, background 180ms ease; }
+    .spoiler-button:hover, .spoiler-button:focus-visible { color: white; background: var(--red); }
+    .spoiler-button span { font-size: 1rem; }
+    .spoiler-content { margin-top: 22px; padding: 24px; border: 1px dashed var(--line-red); background: rgba(227, 11, 16, 0.06); }
+    .spoiler-content[hidden] { display: none; }
+    .spoiler-content h3 { margin: 0 0 10px; font-family: "Yu Mincho", serif; font-size: 1rem; font-weight: 400; letter-spacing: 0.12em; }
+    .spoiler-content p { margin: 0; color: var(--muted); font-size: 0.72rem; line-height: 1.95; }
+
+    .episode-section { overflow: hidden; background: #160909; }
+    .episode-section::before { position: absolute; top: -190px; left: -140px; width: 560px; height: 560px; border: 1px solid rgba(227, 11, 16, 0.24); border-radius: 50%; content: ""; }
+    .episode-section::after { position: absolute; right: -100px; bottom: 110px; width: 580px; height: 1px; transform: rotate(-38deg); background: linear-gradient(90deg, transparent, var(--line-red), transparent); content: ""; }
+    .episode-layout { position: relative; z-index: 1; display: grid; grid-template-columns: 0.76fr 1.24fr; gap: 11%; align-items: start; }
+    .episode-copy { position: relative; }
+    .episode-copy::before { position: absolute; top: -14px; left: -23px; color: rgba(227, 11, 16, 0.12); content: "10"; font-family: Arial, sans-serif; font-size: 12rem; font-weight: 800; letter-spacing: -0.12em; line-height: 0.8; pointer-events: none; }
+    .episode-copy > * { position: relative; z-index: 1; }
+    .episode-copy h2 { max-width: 460px; }
+    .episode-copy > p { max-width: 365px; margin: 26px 0 0; color: var(--muted); font-size: 0.8rem; line-height: 2; }
+    .episode-note { display: flex; align-items: center; gap: 11px; margin-top: 36px; color: var(--sand); font-family: Arial, sans-serif; font-size: 0.54rem; letter-spacing: 0.16em; }
+    .episode-note::before { width: 25px; height: 1px; background: var(--red); content: ""; }
+    .episode-visual { position: relative; height: 230px; margin-top: 52px; overflow: hidden; border: 1px solid var(--line-red); background: var(--black); }
+    .episode-visual::before { position: absolute; z-index: 1; top: 0; bottom: 0; left: 0; width: 42%; border-right: 1px solid rgba(227, 11, 16, 0.6); background: linear-gradient(90deg, rgba(7, 7, 7, 0.88), transparent); content: ""; }
+    .episode-visual::after { position: absolute; z-index: 1; inset: 0; content: ""; background: linear-gradient(0deg, rgba(7, 7, 7, 0.88), transparent 60%); pointer-events: none; }
+    .episode-visual img { width: 100%; height: 100%; object-fit: cover; object-position: center 46%; opacity: 0.7; filter: saturate(0.72) contrast(1.08); }
+    .episode-visual-copy { position: absolute; z-index: 2; right: 18px; bottom: 17px; left: 19px; display: flex; align-items: end; justify-content: space-between; gap: 15px; }
+    .episode-visual-copy strong { color: white; font-family: Arial, sans-serif; font-size: 2.15rem; letter-spacing: 0.05em; line-height: 0.8; }
+    .episode-visual-copy span { color: var(--sand-light); font-family: Arial, sans-serif; font-size: 0.5rem; letter-spacing: 0.16em; }
+    .episode-list { position: relative; border-top: 1px solid var(--line); }
+    .episode-list::before { position: absolute; top: 0; bottom: 0; left: 18px; width: 1px; background: linear-gradient(var(--red), rgba(227, 11, 16, 0.05)); content: ""; pointer-events: none; }
+    .episode { border-bottom: 1px solid var(--line); }
+    .episode summary { position: relative; display: grid; grid-template-columns: 68px 1fr auto; align-items: center; gap: 18px; padding: 18px 2px 18px 31px; cursor: pointer; list-style: none; transition: color 180ms ease, background 180ms ease; }
+    .episode summary::-webkit-details-marker { display: none; }
+    .episode summary::after { color: var(--red); content: "+"; font-family: Arial, sans-serif; font-size: 1rem; transition: transform 180ms ease; }
+    .episode[open] summary { background: rgba(227, 11, 16, 0.06); }
+    .episode[open] summary::after { transform: rotate(45deg); }
+    .episode summary:hover, .episode summary:focus-visible { color: var(--sand-light); }
+    .episode-number { color: var(--red); font-family: Arial, sans-serif; font-size: 0.58rem; letter-spacing: 0.15em; }
+    .episode-title { color: var(--ink); font-family: "Yu Mincho", serif; font-size: 0.98rem; letter-spacing: 0.1em; }
+    .episode-tag { color: var(--muted-dark); font-family: Arial, sans-serif; font-size: 0.51rem; letter-spacing: 0.11em; }
+    .episode p { margin: 0; padding: 0 45px 21px 99px; color: var(--muted); font-size: 0.72rem; line-height: 1.9; }
+
+    .watch { position: relative; min-height: 470px; overflow: hidden; padding: 0; background: var(--red); }
+    .watch-media { position: absolute; inset: 0 0 0 42%; opacity: 0.66; mix-blend-mode: multiply; }
+    .watch-media img { width: 100%; height: 100%; object-fit: cover; object-position: center; filter: grayscale(0.1) contrast(1.1); }
+    .watch::before { position: absolute; z-index: 1; inset: 0; content: ""; background: linear-gradient(90deg, var(--red) 0%, rgba(227, 11, 16, 0.95) 33%, rgba(227, 11, 16, 0.48) 72%, rgba(227, 11, 16, 0.72) 100%); }
+    .watch-inner { position: relative; z-index: 2; display: flex; align-items: center; min-height: 470px; }
+    .watch-copy { max-width: 630px; }
+    .watch-copy .section-kicker { color: white; }
+    .watch-copy h2 { color: white; font-size: clamp(2.2rem, 5vw, 4.5rem); letter-spacing: 0.13em; }
+    .watch-copy p { max-width: 480px; margin: 22px 0 0; color: rgba(255, 255, 255, 0.84); font-size: 0.8rem; line-height: 2; }
+    .watch-actions { display: flex; align-items: center; gap: 24px; margin-top: 29px; }
+    .watch .button { border-color: white; color: var(--red); background: white; }
+    .watch .button:hover, .watch .button:focus-visible { color: white; background: transparent; }
+    .watch .text-link { color: white; }
+    .watch .text-link:hover, .watch .text-link:focus-visible { color: white; }
+    .watch-meta { position: absolute; right: 0; bottom: 35px; color: rgba(255, 255, 255, 0.66); font-family: Arial, sans-serif; font-size: 0.53rem; letter-spacing: 0.16em; }
+
+    footer { padding: 52px 0 36px; background: #050505; }
+    .footer-top { display: flex; align-items: end; justify-content: space-between; gap: 25px; padding-bottom: 44px; }
+    .footer-logo { margin: 0; color: var(--red); font-family: Arial, sans-serif; font-size: clamp(3.6rem, 10vw, 8rem); font-weight: 800; letter-spacing: 0.05em; line-height: 0.75; }
+    .footer-copy { margin: 0; color: var(--muted); font-family: "Yu Mincho", serif; font-size: 0.8rem; letter-spacing: 0.16em; line-height: 1.9; text-align: right; }
+    .footer-bottom { display: flex; align-items: start; justify-content: space-between; gap: 20px; padding-top: 19px; border-top: 1px solid var(--line); color: var(--muted-dark); font-family: Arial, sans-serif; font-size: 0.52rem; letter-spacing: 0.12em; line-height: 1.8; }
+    .footer-bottom a { color: var(--sand); }
+    .credits { max-width: 550px; text-align: left; }
+    .back-top { position: fixed; right: 28px; bottom: 24px; z-index: 12; display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid var(--line); color: var(--sand); background: rgba(7, 7, 7, 0.8); font-family: Arial, sans-serif; font-size: 0.78rem; opacity: 0; pointer-events: none; transition: opacity 180ms ease, background 180ms ease; }
+    .back-top.visible { opacity: 1; pointer-events: auto; }
+    .back-top:hover, .back-top:focus-visible { background: var(--red); }
+
+    dialog { width: min(650px, calc(100% - 32px)); padding: 0; border: 1px solid var(--line-red); color: var(--ink); background: #111; box-shadow: 0 25px 100px rgba(0, 0, 0, 0.7); }
+    dialog::backdrop { background: rgba(0, 0, 0, 0.78); backdrop-filter: blur(6px); }
+    .dialog-inner { display: grid; grid-template-columns: 0.83fr 1.17fr; }
+    .dialog-image { min-height: 310px; }
+    .dialog-image img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    .dialog-copy { position: relative; padding: 33px 32px; }
+    .dialog-close { position: absolute; top: 14px; right: 15px; border: 0; color: var(--muted); background: none; cursor: pointer; font-size: 1.3rem; }
+    .dialog-close:hover, .dialog-close:focus-visible { color: var(--red); }
+    .dialog-label { display: block; margin-bottom: 17px; color: var(--red); font-family: Arial, sans-serif; font-size: 0.57rem; letter-spacing: 0.2em; }
+    .dialog-copy h2 { margin-bottom: 7px; font-size: 1.7rem; }
+    .dialog-actor { margin: 0; color: var(--sand); font-size: 0.7rem; letter-spacing: 0.14em; }
+    .dialog-copy hr { margin: 24px 0; border: 0; border-top: 1px solid var(--line); }
+    .dialog-copy p:last-child { margin: 0; color: var(--muted); font-size: 0.76rem; line-height: 2; }
+
+    .reveal { opacity: 0; transform: translateY(26px); transition: opacity 720ms ease, transform 720ms ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } .reveal { opacity: 1; transform: none; } }
+
+    @media (max-width: 950px) {
+      .header-inner, .wrap { width: min(var(--max), calc(100% - 48px)); }
+      .main-nav, .header-cta { display: none; }
+      .menu-button { display: block; }
+      .mobile-nav { position: absolute; top: 78px; right: 24px; left: 24px; display: grid; max-height: 0; overflow: hidden; border: 1px solid transparent; background: rgba(7, 7, 7, 0.97); opacity: 0; transition: max-height 240ms ease, opacity 200ms ease, border-color 200ms ease; }
+      .mobile-nav.open { max-height: 280px; border-color: var(--line); opacity: 1; }
+      .mobile-nav a { padding: 17px 20px; border-bottom: 1px solid var(--line); color: var(--muted); font-family: Arial, sans-serif; font-size: 0.62rem; letter-spacing: 0.16em; }
+      .mobile-nav a:last-child { border-bottom: 0; }
+      .hero-inner { grid-template-columns: 1fr 0.45fr; }
+      .hero-copy { width: 100%; }
+      .hero-notice { width: 205px; margin-right: 3%; }
+      .overview, .world-layout, .episode-layout { gap: 45px; }
+      .cast-grid { grid-template-columns: repeat(2, 1fr); }
+      .cast-card:last-child { grid-column: span 2; min-height: 0; }
+      .cast-card:last-child img { min-height: 0; object-position: center; }
     }
-
-    h1 {
-      margin: 0 0 1rem;
-      font-size: clamp(2rem, 6vw, 3rem);
-    }
-
-    p {
-      margin: 0;
-      line-height: 1.8;
-      color: #4b5563;
-    }
-
-    section {
-      margin-top: 2rem;
-      text-align: left;
-    }
-
-    h2 {
-      margin: 0 0 0.75rem;
-      font-size: 1.25rem;
-    }
-
-    ul {
-      margin: 0;
-      padding-left: 1.25rem;
-      color: #4b5563;
-      line-height: 1.8;
-    }
-
-    footer {
-      margin-top: 2rem;
-      font-size: 0.875rem;
-      color: #9ca3af;
+    @media (max-width: 650px) {
+      .header-inner, .wrap { width: calc(100% - 36px); }
+      .hero { min-height: 820px; }
+      .hero-media { inset: 0; }
+      .hero-media img { object-position: center; }
+      .hero::before { background: linear-gradient(90deg, rgba(7, 7, 7, 0.96), rgba(7, 7, 7, 0.55)), linear-gradient(0deg, var(--black) 3%, transparent 52%); }
+      .hero::after { right: 5%; }
+      .hero-inner { display: flex; align-items: center; min-height: 820px; padding-top: 50px; }
+      .hero-copy { max-width: none; }
+      .hero-title { font-size: clamp(4.4rem, 20vw, 7rem); }
+      .hero-subtitle { margin-top: 25px; font-size: 0.93rem; letter-spacing: 0.2em; }
+      .hero-lede { margin-top: 26px; font-size: 0.78rem; }
+      .hero-actions { align-items: flex-start; flex-direction: column; gap: 18px; margin-top: 27px; }
+      .hero-data { margin-top: 43px; }
+      .hero-data-item { padding: 15px 8px 14px 0; }
+      .hero-data-item + .hero-data-item { padding-left: 9px; }
+      .data-value { font-size: 0.64rem; }
+      .hero-notice { display: none; }
+      .hero-vertical { right: 16px; bottom: 28px; }
+      .section { padding: 89px 0; }
+      .section-header, .cast-intro { display: block; margin-bottom: 34px; }
+      .section-desc { margin-top: 18px; text-align: left; }
+      .section-rule { margin-bottom: 37px; }
+      .section-stamp { right: -8px; top: 20px; font-size: 5rem; }
+      .overview, .world-layout, .episode-layout { grid-template-columns: 1fr; gap: 42px; }
+      .overview-lead { font-size: 1.42rem; }
+      .overview-body { font-size: 0.78rem; }
+      .overview-visual { min-height: 300px; padding: 10px; }
+      .overview-visual img { min-height: 278px; }
+      .visual-caption { right: 17px; bottom: 17px; left: 17px; font-size: 0.48rem; }
+      .fact-grid { grid-template-columns: 1fr 1fr; margin-top: 65px; }
+      .fact { min-height: 122px; padding: 19px 15px; }
+      .fact-number { margin-bottom: 14px; font-size: 0.57rem; }
+      .fact strong { font-size: 1.55rem; }
+      .fact span { font-size: 0.57rem; }
+      .experience { grid-template-columns: 1fr; gap: 9px; }
+      .experience-card { min-height: 225px; padding: 23px; }
+      .experience-number { margin-bottom: 38px; }
+      .experience-card h3 { font-size: 1.14rem; }
+      .cast-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .cast-card, .cast-card img { min-height: 0; }
+      .cast-card:last-child { grid-column: span 2; min-height: 0; }
+      .cast-card:last-child img { min-height: 0; }
+      .cast-meta { right: 13px; bottom: 15px; left: 13px; }
+      .cast-index { font-size: 0.47rem; }
+      .cast-meta h3 { font-size: 1rem; }
+      .cast-meta p { font-size: 0.54rem; }
+      .cast-arrow { top: 12px; right: 12px; width: 24px; height: 24px; font-size: 0.72rem; }
+      .world-copy h2, .episode-copy h2 { font-size: 2rem; }
+      .org-list { gap: 8px; }
+      .org-card { min-height: 160px; padding: 18px 17px; }
+      .org-code { margin-bottom: 21px; font-size: 0.47rem; }
+      .org-card h3 { font-size: 1rem; }
+      .org-card p { font-size: 0.61rem; }
+      .spoiler-tools { margin-top: 40px; }
+      .episode summary { grid-template-columns: 54px 1fr auto; gap: 10px; padding: 16px 0 16px 23px; }
+      .episode-number { font-size: 0.5rem; }
+      .episode-title { font-size: 0.83rem; }
+      .episode-tag { display: none; }
+      .episode p { padding: 0 26px 18px 64px; font-size: 0.65rem; }
+      .episode-visual { height: 190px; margin-top: 40px; }
+      .episode-visual-copy strong { font-size: 1.75rem; }
+      .episode-visual-copy span { font-size: 0.45rem; }
+      .watch { min-height: 520px; }
+      .watch-media { inset: 30% 0 0; opacity: 0.35; }
+      .watch::before { background: linear-gradient(180deg, var(--red) 0%, rgba(227, 11, 16, 0.86) 49%, rgba(227, 11, 16, 0.52) 100%); }
+      .watch-inner { min-height: 520px; align-items: start; padding-top: 84px; }
+      .watch-copy h2 { font-size: 2.25rem; }
+      .watch-copy p { font-size: 0.74rem; }
+      .watch-actions { align-items: flex-start; flex-direction: column; gap: 18px; }
+      .watch-meta { right: 0; bottom: 25px; font-size: 0.47rem; }
+      footer { padding-top: 44px; }
+      .footer-top { display: block; padding-bottom: 33px; }
+      .footer-copy { margin-top: 27px; text-align: left; }
+      .footer-bottom { display: block; }
+      .footer-bottom > * { display: block; }
+      .footer-bottom > * + * { margin-top: 14px; }
+      .credits { max-width: 100%; }
+      .back-top { right: 16px; bottom: 17px; }
+      .dialog-inner { grid-template-columns: 1fr; }
+      .dialog-image { height: 230px; min-height: 0; }
+      .dialog-copy { padding: 25px 23px 29px; }
     }
   </style>
 </head>
 <body>
-  <main>
-    <h1>VIVANT</h1>
-    <p>壮大なスケールで描かれる、謎と伏線のサスペンスドラマ。</p>
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="VIVANTトップへ"><span class="brand-mark" aria-hidden="true"></span>VIVANT / CASE FILE</a>
+      <nav class="main-nav" aria-label="ページ内ナビゲーション">
+        <a href="#about">ABOUT</a>
+        <a href="#cast">CAST</a>
+        <a href="#world">WORLD</a>
+        <a href="#episodes">EPISODES</a>
+      </nav>
+      <a class="header-cta" href="https://www.amazon.co.jp/gp/video/detail/B0GVJFX3H4/" target="_blank" rel="noreferrer">WATCH NOW <span aria-hidden="true">↗</span></a>
+      <button class="menu-button" id="menu-button" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="モバイルナビゲーション">
+      <a href="#about">01 / ABOUT</a>
+      <a href="#cast">02 / CAST</a>
+      <a href="#world">03 / WORLD</a>
+      <a href="#episodes">04 / EPISODES</a>
+      <a href="#watch">WATCH NOW ↗</a>
+    </nav>
+  </header>
 
-    <section>
-      <h2>作品概要</h2>
-      <p>
-        丸菱商事の社員・乃木憂助は、1億ドルの誤送金事件をきっかけに、
-        世界を舞台にした大きな陰謀へ巻き込まれていきます。
-        公安、自衛隊の精鋭部隊、謎のテロ組織が交錯する中で、
-        乃木の過去と本当の目的が少しずつ明らかになります。
-      </p>
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-media" aria-hidden="true"><img src="assets/vivant/main.jpg" alt=""></div>
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="wrap hero-inner">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">TBS / SUNDAY THEATER / THE NEXT CHAPTER</p>
+          <h1 class="hero-title" id="hero-title">VIVANT</h1>
+          <p class="hero-subtitle">敵か味方か、味方か敵か。</p>
+          <p class="hero-lede">1億ドル、約140億円の誤送金から始まる、国境を越えた冒険。ひとりの商社マンに隠された「もう一つの顔」と、世界を巻き込む謎を読み解く。</p>
+          <div class="hero-actions"><a class="button" href="#about">CASE FILE を開く <span aria-hidden="true">↘</span></a><a class="text-link" href="#cast">登場人物を見る <span aria-hidden="true">→</span></a></div>
+          <div class="hero-data" aria-label="作品データ"><div class="hero-data-item"><span class="data-label">FIRST SEASON</span><span class="data-value">2023.07 — 09</span></div><div class="hero-data-item"><span class="data-label">EPISODES</span><span class="data-value">全10話</span></div><div class="hero-data-item"><span class="data-label">GENRE</span><span class="data-value">アドベンチャー</span></div></div>
+        </div>
+        <aside class="hero-notice reveal"><span class="notice-code">SIGNAL / 2026</span><strong>物語は、<br>まだ終わっていない。</strong><p>前作のラストから直結する続編へ。まずは最初の10話を振り返る。</p></aside>
+      </div>
+      <div class="hero-vertical" aria-hidden="true">THE UNSEEN WORLD / 001</div>
     </section>
 
-    <section>
-      <h2>見どころ</h2>
-      <ul>
-        <li>モンゴルをはじめとする海外ロケと迫力の映像</li>
-        <li>登場人物の正体や関係性をめぐる巧みな伏線</li>
-        <li>味方と敵が入れ替わる、先の読めない展開</li>
-      </ul>
+    <section class="section section-black" id="about">
+      <div class="wrap">
+        <div class="section-header reveal"><div><p class="section-kicker">01 <span>/ ABOUT</span></p><h2>事件は、数字から始まった。</h2></div><p class="section-desc">壮大な砂漠、二転三転する正体、そして家族の記憶。VIVANTを初めて観る人へ。</p></div>
+        <div class="section-rule reveal"></div>
+        <div class="overview">
+          <div class="reveal"><p class="overview-lead">その男、<br>ただの会社員か。</p><p class="overview-body">丸菱商事の社員・<strong>乃木憂助</strong>は、本来1,000万ドルだった契約金を、何者かの改ざんによって1億ドル――劇中換算で約140億円――送金してしまう。取り戻すべき差額は9,000万ドル、約130億円。送金先のバルカ共和国で爆発事件に巻き込まれた乃木は、公安の野崎守、医師の柚木薫とともに脱出を目指すことになる。</p><div class="case-line">NO SPOILERS / FIRST IMPRESSION</div></div>
+          <figure class="overview-visual reveal"><img src="assets/vivant/intro.webp" alt="VIVANTの登場人物を写した公式ビジュアル"><figcaption class="visual-caption"><span>ARCHIVE / VISUAL 01</span><span>TBS DRAMA</span></figcaption></figure>
+        </div>
+        <div class="fact-grid"><div class="fact reveal"><span class="fact-number">FACT / 01</span><strong>140億円</strong><span>誤送金された1億ドル</span></div><div class="fact reveal"><span class="fact-number">FACT / 02</span><strong>130億円</strong><span>取り戻す差額・約9,000万ドル</span></div><div class="fact reveal"><span class="fact-number">FACT / 03</span><strong>10話</strong><span>第1シーズンの全エピソード</span></div><div class="fact reveal"><span class="fact-number">FACT / 04</span><strong>世界</strong><span>日本とバルカをつなぐ舞台</span></div></div>
+      </div>
     </section>
 
-    <footer>VIVANT作品まとめ</footer>
+    <section class="section section-charcoal">
+      <div class="section-stamp" aria-hidden="true">WHY</div>
+      <div class="wrap">
+        <div class="section-header reveal"><div><p class="section-kicker">WHAT MAKES IT VIVANT <span>/ 見どころ</span></p><h2>観るほど、疑う。</h2></div><p class="section-desc">映像のスケールだけではない。VIVANTが視線を離させない3つの理由。</p></div>
+        <div class="experience"><article class="experience-card reveal"><span class="experience-number">01 / SCALE</span><h3>砂漠から国家へ</h3><p>海外ロケで描かれる広大な景色が、事件のスケールを一気に押し広げる。画面の奥行きそのものが物語になる。</p><small>THE WORLD IS THE STAGE</small></article><article class="experience-card reveal"><span class="experience-number">02 / MYSTERY</span><h3>全員が、何かを隠す。</h3><p>何気ない台詞、視線、数字。散りばめられた違和感が、別の意味を持って立ち上がる。</p><small>TRUST NO ONE</small></article><article class="experience-card reveal"><span class="experience-number">03 / HUMANITY</span><h3>正義は、一つじゃない。</h3><p>敵と味方の境界は何度も揺れる。国家、家族、信念が交差する人間ドラマが核心を熱くする。</p><small>EVERY CHOICE HAS A COST</small></article></div>
+      </div>
+    </section>
+
+    <section class="section section-black" id="cast">
+      <div class="wrap">
+        <div class="section-header reveal"><div><p class="section-kicker">02 <span>/ CAST</span></p><h2>誰も、<br>ただ者ではない。</h2></div><p class="section-desc">タップすると、その人物の役割と物語の入口を表示します。核心は伏せています。</p></div>
+        <div class="cast-intro reveal"><p>堺雅人、阿部寛、二階堂ふみ、松坂桃李、役所広司。豪華キャストが演じる、交差する5つの視線。</p><a class="text-link" href="#world">人物を組織から見る <span aria-hidden="true">→</span></a></div>
+        <div class="cast-grid">
+          <button class="cast-card reveal" type="button" data-cast="nogi"><img src="assets/vivant/nogi.webp" alt="乃木憂助（堺雅人）の公式ビジュアル"><span class="cast-arrow" aria-hidden="true">↗</span><div class="cast-meta"><span class="cast-index">FILE 01 / PROTAGONIST</span><div class="cast-name"><h3>乃木 憂助</h3><p>堺 雅人 / 丸菱商事</p></div></div></button>
+          <button class="cast-card reveal" type="button" data-cast="nozaki"><img src="assets/vivant/nozaki.webp" alt="野崎守（阿部寛）の公式ビジュアル"><span class="cast-arrow" aria-hidden="true">↗</span><div class="cast-meta"><span class="cast-index">FILE 02 / DETECTIVE</span><div class="cast-name"><h3>野崎 守</h3><p>阿部 寛 / 公安</p></div></div></button>
+          <button class="cast-card reveal" type="button" data-cast="yuzuki"><img src="assets/vivant/yuzuki.webp" alt="柚木薫（二階堂ふみ）の公式ビジュアル"><span class="cast-arrow" aria-hidden="true">↗</span><div class="cast-meta"><span class="cast-index">FILE 03 / MEDIC</span><div class="cast-name"><h3>柚木 薫</h3><p>二階堂 ふみ / 医師</p></div></div></button>
+          <button class="cast-card reveal" type="button" data-cast="kurosu"><img src="assets/vivant/kurosu.webp" alt="黒須駿（松坂桃李）の公式ビジュアル"><span class="cast-arrow" aria-hidden="true">↗</span><div class="cast-meta"><span class="cast-index">FILE 04 / OPERATIVE</span><div class="cast-name"><h3>黒須 駿</h3><p>松坂 桃李 / 別班</p></div></div></button>
+          <button class="cast-card reveal" type="button" data-cast="nokor"><img src="assets/vivant/nokor.webp" alt="ノコル（二宮和也）の公式ビジュアル"><span class="cast-arrow" aria-hidden="true">↗</span><div class="cast-meta"><span class="cast-index">FILE 05 / UNKNOWN</span><div class="cast-name"><h3>ノコル</h3><p>二宮 和也 / テント</p></div></div></button>
+          <button class="cast-card reveal" type="button" data-cast="drum"><img src="assets/vivant/drum.webp" alt="ドラム（富栄ドラム）の公式ビジュアル"><span class="cast-arrow" aria-hidden="true">↗</span><div class="cast-meta"><span class="cast-index">FILE 06 / ALLY</span><div class="cast-name"><h3>ドラム</h3><p>富栄 ドラム / 野崎の仲間</p></div></div></button>
+        </div>
+        <p class="cast-footnote">PHOTOGRAPHS / OFFICIAL TBS CHARACTER VISUALS</p>
+      </div>
+    </section>
+
+    <section class="section world-section" id="world">
+      <div class="wrap">
+        <div class="world-layout">
+          <div class="world-copy reveal"><p class="section-kicker">03 <span>/ WORLD</span></p><h2>味方と敵を、<br>簡単に分けない。</h2><p>商社、公安、別班、テント。立場の違う組織が、一つの事件を別々の正義から見つめている。VIVANTの面白さは、誰の視点に立つかで景色が変わること。</p><span class="classified">INTEL / CLASSIFIED</span></div>
+          <div class="org-list"><article class="org-card reveal" style="--org-color:#c49b63"><span class="org-code">SECTOR 01 / SURFACE</span><h3>丸菱商事</h3><p>乃木が所属する会社。事件はここで起きた「誤送金」から動き出す。</p></article><article class="org-card reveal" style="--org-color:#7199ad"><span class="org-code">SECTOR 02 / PUBLIC</span><h3>公安</h3><p>野崎が所属する組織。国際テロの線から事件を追う。</p></article><article class="org-card reveal" style="--org-color:#e30b10"><span class="org-code">SECTOR 03 / SHADOW</span><h3>別班</h3><p>表に出ない任務を担う、自衛隊直轄の非公認組織。</p></article><article class="org-card reveal" style="--org-color:#9a5b4a"><span class="org-code">SECTOR 04 / UNKNOWN</span><h3>テント</h3><p>世界各地で活動する、謎に包まれた国際テロ組織。</p></article></div>
+        </div>
+        <div class="spoiler-tools reveal"><button class="spoiler-button" id="spoiler-button" type="button" aria-expanded="false" aria-controls="spoiler-content">CORE INTEL / SHOW <span aria-hidden="true">+</span></button><div class="spoiler-content" id="spoiler-content" hidden><h3>核心情報を表示しています</h3><p>乃木憂助の裏の顔は、自衛隊直轄の非公認組織「別班」の諜報員。追う国際テロ組織「テント」の指導者ノゴーン・ベキは、乃木の生き別れた父親でもある。家族の物語と国家の任務が、同じ一人の男の中で交差する。</p></div></div>
+      </div>
+    </section>
+
+    <section class="section episode-section" id="episodes">
+      <div class="wrap">
+        <div class="episode-layout">
+          <div class="episode-copy reveal"><p class="section-kicker">04 <span>/ EPISODES</span></p><h2>10話で、<br>世界の見え方が変わる。</h2><p>第1シーズンの流れを、核心を避けて記録。まずは気になる話数から、そしてできれば最初から。</p><span class="episode-note">EPISODE GUIDE / SPOILER LIGHT</span><div class="episode-visual"><img src="assets/vivant/main.jpg" alt="砂漠に立つVIVANTの登場人物たち"><div class="episode-visual-copy"><strong>THE<br>JOURNEY</strong><span>10 CHAPTERS<br>ONE QUESTION</span></div></div></div>
+          <div class="episode-list">
+            <details class="episode reveal" open><summary><span class="episode-number">EP.01</span><span class="episode-title">誤送金</span><span class="episode-tag">THE FIRST SIGNAL</span></summary><p>丸菱商事の乃木は、誤送金された1億ドル（約140億円）を取り戻すためバルカ共和国へ向かう。そこから、予想もしなかった逃走劇が始まる。</p></details>
+            <details class="episode reveal"><summary><span class="episode-number">EP.02</span><span class="episode-title">バルカ脱出</span><span class="episode-tag">THE BORDER</span></summary><p>公安の野崎、医師の薫と出会った乃木は、爆発事件と自分にかけられた疑いから逃れようとする。</p></details>
+            <details class="episode reveal"><summary><span class="episode-number">EP.03</span><span class="episode-title">砂漠の邂逅</span><span class="episode-tag">THE DESERT</span></summary><p>砂漠を舞台に、追う側と追われる側の思惑が交差する。乃木の行動に、少しずつ違和感が生まれる。</p></details>
+            <details class="episode reveal"><summary><span class="episode-number">EP.04</span><span class="episode-title">もう一つの顔</span><span class="episode-tag">THE OTHER SIDE</span></summary><p>事件を追う線が日本へ戻り、乃木の能力と過去に隠されたものが物語の前面に現れる。</p></details>
+            <details class="episode reveal"><summary><span class="episode-number">EP.05</span><span class="episode-title">別班</span><span class="episode-tag">THE SHADOW</span></summary><p>国家の表には出ない任務を担う者たち。チームの合流によって、事件の目的が大きく変わる。</p></details>
+            <details class="episode reveal"><summary><span class="episode-number">EP.06</span><span class="episode-title">テントの輪郭</span><span class="episode-tag">THE ENEMY</span></summary><p>謎の組織をめぐる情報がつながり始める。正義と悪を一言で決められない世界が見えてくる。</p></details>
+            <details class="episode reveal"><summary><span class="episode-number">EP.07</span><span class="episode-title">家族の記憶</span><span class="episode-tag">THE BLOOD</span></summary><p>乃木の過去と現在が一本の線になる。追跡は、個人的な運命との対峙へ変わっていく。</p></details>
+            <details class="episode reveal"><summary><span class="episode-number">EP.08</span><span class="episode-title">それぞれの正義</span><span class="episode-tag">THE CHOICE</span></summary><p>同じ目的を掲げながらも、選ぶ手段は異なる。仲間たちの決断が、終盤の緊張を高める。</p></details>
+            <details class="episode reveal"><summary><span class="episode-number">EP.09</span><span class="episode-title">父と子</span><span class="episode-tag">THE FATHER</span></summary><p>壮大な事件の奥にあった、ひとつの家族の物語。乃木は最も困難な選択を迫られる。</p></details>
+            <details class="episode reveal"><summary><span class="episode-number">EP.10</span><span class="episode-title">VIVANT</span><span class="episode-tag">THE LAST SIGNAL</span></summary><p>すべての線が交わり、物語は一つの決着を迎える。しかし、最後に残るのは新たな問いだった。</p></details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="watch" id="watch">
+      <div class="watch-media" aria-hidden="true"><img src="assets/vivant/main.jpg" alt=""></div>
+      <div class="wrap watch-inner"><div class="watch-copy reveal"><p class="section-kicker">READY TO ENTER?</p><h2>さあ、最初の一話へ。</h2><p>何も知らない状態で観ることが、VIVANTを最大限に楽しむ方法。視聴環境や配信状況は、各サービスの公式ページでご確認ください。</p><div class="watch-actions"><a class="button" href="https://www.amazon.co.jp/gp/video/detail/B0GVJFX3H4/" target="_blank" rel="noreferrer">Amazon Prime Video で観る <span aria-hidden="true">↗</span></a><a class="text-link" href="https://www.tbs.co.jp/VIVANT_tbs/" target="_blank" rel="noreferrer">TBS公式サイト <span aria-hidden="true">↗</span></a></div></div><span class="watch-meta">STREAMING INFORMATION / EXTERNAL LINKS</span></div>
+    </section>
   </main>
+
+  <footer>
+    <div class="wrap"><div class="footer-top"><p class="footer-logo">VIVANT</p><p class="footer-copy">敵か味方か、味方か敵か。<br>世界を駆ける、謎解きの旅。</p></div><div class="footer-bottom"><span class="credits">A FAN-MADE GUIDE / Visual assets sourced from the official TBS VIVANT website. Rights belong to their respective owners.</span><a href="https://www.tbs.co.jp/VIVANT_tbs/" target="_blank" rel="noreferrer">OFFICIAL TBS SITE ↗</a><span>© VIVANT CASE FILE</span></div></div>
+  </footer>
+
+  <dialog id="cast-dialog" aria-labelledby="dialog-title"><div class="dialog-inner"><div class="dialog-image"><img id="dialog-image" src="" alt=""></div><div class="dialog-copy"><button class="dialog-close" id="dialog-close" type="button" aria-label="閉じる">×</button><span class="dialog-label" id="dialog-label">CHARACTER FILE</span><h2 id="dialog-title"></h2><p class="dialog-actor" id="dialog-actor"></p><hr><p id="dialog-description"></p></div></div></dialog>
+  <a class="back-top" id="back-top" href="#top" aria-label="ページ上部へ戻る">↑</a>
+
+  <script>
+    const header = document.querySelector("#site-header");
+    const backTop = document.querySelector("#back-top");
+    const menuButton = document.querySelector("#menu-button");
+    const mobileNav = document.querySelector("#mobile-nav");
+    const spoilerButton = document.querySelector("#spoiler-button");
+    const spoilerContent = document.querySelector("#spoiler-content");
+
+    const updateChrome = () => {
+      const scrolled = window.scrollY > 26;
+      header.classList.toggle("scrolled", scrolled);
+      backTop.classList.toggle("visible", window.scrollY > 560);
+    };
+    updateChrome();
+    window.addEventListener("scroll", updateChrome, { passive: true });
+
+    menuButton.addEventListener("click", () => {
+      const open = mobileNav.classList.toggle("open");
+      menuButton.setAttribute("aria-expanded", String(open));
+      menuButton.setAttribute("aria-label", open ? "メニューを閉じる" : "メニューを開く");
+    });
+    mobileNav.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => {
+      mobileNav.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
+      menuButton.setAttribute("aria-label", "メニューを開く");
+    }));
+
+    spoilerButton.addEventListener("click", () => {
+      const show = spoilerContent.hidden;
+      spoilerContent.hidden = !show;
+      spoilerButton.setAttribute("aria-expanded", String(show));
+      spoilerButton.innerHTML = show ? "CORE INTEL / HIDE <span aria-hidden=\"true\">−</span>" : "CORE INTEL / SHOW <span aria-hidden=\"true\">+</span>";
+    });
+
+    const castData = {
+      nogi: { label: "FILE 01 / PROTAGONIST", title: "乃木 憂助", actor: "堺 雅人 / 丸菱商事・別班", image: "assets/vivant/nogi.webp", description: "穏やかで、どこか頼りない商社マン。しかし、危機の中で見せる判断力と身体能力には、別の顔を思わせるものがある。事件の中心にいる彼を、最後まで疑いながら見届けたい。" },
+      nozaki: { label: "FILE 02 / DETECTIVE", title: "野崎 守", actor: "阿部 寛 / 公安", image: "assets/vivant/nozaki.webp", description: "公安に所属する捜査官。情報と経験を武器に、バルカで起きた事件の裏側を追う。乃木との距離感が変化していく過程も、この物語の大きな見どころ。" },
+      yuzuki: { label: "FILE 03 / MEDIC", title: "柚木 薫", actor: "二階堂 ふみ / 世界医療機構・医師", image: "assets/vivant/yuzuki.webp", description: "バルカで医療活動を続ける医師。混乱の中でも人を救うことを選び続ける、物語の中の確かな光。乃木と野崎、両者の間で重要な役割を担う。" },
+      kurosu: { label: "FILE 04 / OPERATIVE", title: "黒須 駿", actor: "松坂 桃李 / 別班", image: "assets/vivant/kurosu.webp", description: "任務のために動く別班の一員。感情を表に出さず、チームの中で自分の役割を果たす。作戦が進むにつれて、彼の視線にも変化が現れる。" },
+      nokor: { label: "FILE 05 / UNKNOWN", title: "ノコル", actor: "二宮 和也 / テント", image: "assets/vivant/nokor.webp", description: "謎の組織テントに関わる人物。乃木の前に現れたとき、敵味方の境界はさらに曖昧になる。佇まいと短い言葉の奥にあるものを読み解きたい。" },
+      drum: { label: "FILE 06 / ALLY", title: "ドラム", actor: "富栄 ドラム / 野崎の仲間", image: "assets/vivant/drum.webp", description: "野崎と行動を共にする、頼もしくも愛嬌のある仲間。言葉を使わないコミュニケーションと、緊迫した場面の中に生まれる温度を担う存在。" }
+    };
+    const dialog = document.querySelector("#cast-dialog");
+    const dialogImage = document.querySelector("#dialog-image");
+    const dialogLabel = document.querySelector("#dialog-label");
+    const dialogTitle = document.querySelector("#dialog-title");
+    const dialogActor = document.querySelector("#dialog-actor");
+    const dialogDescription = document.querySelector("#dialog-description");
+    const closeDialog = () => { if (dialog.open) dialog.close(); };
+    document.querySelectorAll(".cast-card").forEach((card) => card.addEventListener("click", () => {
+      const data = castData[card.dataset.cast];
+      dialogImage.src = data.image;
+      dialogImage.alt = `${data.title}の公式ビジュアル`;
+      dialogLabel.textContent = data.label;
+      dialogTitle.textContent = data.title;
+      dialogActor.textContent = data.actor;
+      dialogDescription.textContent = data.description;
+      dialog.showModal();
+    }));
+    document.querySelector("#dialog-close").addEventListener("click", closeDialog);
+    dialog.addEventListener("click", (event) => { if (event.target === dialog) closeDialog(); });
+
+    const revealItems = document.querySelectorAll(".reveal");
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries, revealObserver) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("visible");
+          revealObserver.unobserve(entry.target);
+        });
+      }, { threshold: 0.13 });
+      revealItems.forEach((item, index) => {
+        item.style.transitionDelay = `${Math.min(index % 5, 4) * 65}ms`;
+        observer.observe(item);
+      });
+    } else {
+      revealItems.forEach((item) => item.classList.add("visible"));
+    }
+  </script>
 </body>
 </html>

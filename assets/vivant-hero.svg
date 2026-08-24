@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1100" role="img" aria-labelledby="title desc">
+  <title id="title">砂漠の夕景を描いた抽象的なビジュアル</title>
+  <desc id="desc">深い緑と砂色の空に、太陽と幾重にも重なる砂丘が広がる。</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#0a1718"/>
+      <stop offset="0.54" stop-color="#183335"/>
+      <stop offset="1" stop-color="#a15c3b"/>
+    </linearGradient>
+    <linearGradient id="haze" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#203d3c" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#e6ae70" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#203d3c" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="farDune" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#324b44"/>
+      <stop offset="1" stop-color="#8b5a42"/>
+    </linearGradient>
+    <linearGradient id="nearDune" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b7764c"/>
+      <stop offset="0.58" stop-color="#d79a60"/>
+      <stop offset="1" stop-color="#6d493b"/>
+    </linearGradient>
+    <radialGradient id="sunGlow">
+      <stop offset="0" stop-color="#ffd9a0" stop-opacity="0.95"/>
+      <stop offset="0.24" stop-color="#f4b976" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#e89b62" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="34"/></filter>
+  </defs>
+
+  <rect width="1600" height="1100" fill="url(#sky)"/>
+  <ellipse cx="1160" cy="475" rx="315" ry="315" fill="url(#sunGlow)" filter="url(#blur)"/>
+  <circle cx="1160" cy="475" r="82" fill="#f7c987" opacity="0.92"/>
+  <path d="M0 470 C280 410 475 468 650 444 C860 414 1010 350 1225 408 C1405 456 1505 442 1600 410 L1600 760 L0 760Z" fill="url(#haze)" opacity="0.5"/>
+  <path d="M0 690 C220 575 408 600 586 654 C785 715 871 643 1024 597 C1210 542 1406 583 1600 666 L1600 1100 L0 1100Z" fill="url(#farDune)"/>
+  <path d="M0 784 C244 730 401 744 574 821 C782 914 937 852 1114 753 C1290 655 1466 708 1600 781 L1600 1100 L0 1100Z" fill="url(#nearDune)"/>
+  <path d="M0 876 C278 811 427 846 638 937 C845 1027 1005 973 1187 866 C1354 768 1486 795 1600 845" fill="none" stroke="#efbd7a" stroke-opacity="0.42" stroke-width="3"/>
+  <path d="M0 924 C272 860 421 899 610 980 C804 1064 1006 1014 1197 902 C1352 811 1475 832 1600 886" fill="none" stroke="#3a3531" stroke-opacity="0.32" stroke-width="5"/>
+
+  <g fill="#f6d49e" opacity="0.68">
+    <circle cx="218" cy="220" r="3"/>
+    <circle cx="352" cy="322" r="2"/>
+    <circle cx="518" cy="170" r="3"/>
+    <circle cx="723" cy="276" r="2"/>
+    <circle cx="908" cy="142" r="3"/>
+    <circle cx="1320" cy="192" r="2"/>
+    <circle cx="1455" cy="310" r="3"/>
+  </g>
+  <g fill="none" stroke="#f5d4a0" stroke-opacity="0.3" stroke-width="2">
+    <path d="M260 642 L260 480 L322 480"/>
+    <path d="M322 480 L322 530"/>
+    <path d="M1382 582 L1382 460 L1442 460"/>
+    <path d="M1442 460 L1442 512"/>
+  </g>
+</svg>

@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="VIVANT ARCHIVE のネオン・テトリス。ブラウザですぐに遊べます。">
+  <title>TETRIS — VIVANT ARCHIVE</title>
+  <style>
+    :root {
+      --bg: #050c0b;
+      --bg-soft: #091612;
+      --panel: rgba(14, 31, 26, 0.88);
+      --panel-solid: #0e1f1a;
+      --paper: #eff2e9;
+      --muted: #8b9e94;
+      --gold: #e2b36f;
+      --gold-bright: #f5cf91;
+      --red: #c86c4a;
+      --line: rgba(226, 179, 111, 0.22);
+      --cell: 30px;
+      font-family: "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: var(--paper);
+      background: var(--bg);
+      font-synthesis: none;
+    }
+
+    * { box-sizing: border-box; }
+    html { min-height: 100%; }
+    body { min-width: 320px; min-height: 100vh; margin: 0; overflow-x: hidden; background: var(--bg); }
+    body::before {
+      position: fixed;
+      z-index: -1;
+      inset: 0;
+      pointer-events: none;
+      content: "";
+      background: radial-gradient(circle at 50% 36%, rgba(47, 101, 81, 0.24), transparent 31%), linear-gradient(rgba(226, 179, 111, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(226, 179, 111, 0.04) 1px, transparent 1px);
+      background-size: auto, 72px 72px, 72px 72px;
+    }
+    body::after { position: fixed; z-index: 9; inset: 0; opacity: 0.05; pointer-events: none; content: ""; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+    button { color: inherit; font: inherit; }
+    a { color: inherit; text-decoration: none; }
+    ::selection { color: var(--bg); background: var(--gold-bright); }
+
+    .topbar { width: min(1180px, calc(100% - 48px)); min-height: 82px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+    .back-link { display: inline-flex; align-items: center; gap: 12px; color: var(--muted); font-size: 0.64rem; letter-spacing: 0.17em; transition: color 180ms ease, gap 180ms ease; }
+    .back-link:hover, .back-link:focus-visible { gap: 17px; color: var(--gold-bright); }
+    .back-link span { color: var(--gold); font-size: 1rem; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; color: var(--paper); font-family: Arial, sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; }
+    .brand-mark { position: relative; width: 13px; height: 13px; transform: rotate(45deg); border: 1px solid var(--gold); }
+    .brand-mark::after { position: absolute; top: 3px; left: 3px; width: 5px; height: 5px; border: 1px solid var(--gold); content: ""; }
+
+    .game-shell { width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 66px 0 70px; }
+    .game-heading { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 42px; }
+    .eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 16px; color: var(--gold); font-size: 0.61rem; font-weight: 700; letter-spacing: 0.26em; }
+    .eyebrow::before { width: 33px; height: 1px; background: var(--gold); content: ""; }
+    h1 { margin: 0; font-family: Arial, sans-serif; font-size: clamp(3rem, 7vw, 5.5rem); letter-spacing: 0.08em; line-height: 0.82; }
+    h1 span { display: block; margin-top: 18px; color: var(--muted); font-family: "Yu Mincho", serif; font-size: 0.85rem; font-weight: 400; letter-spacing: 0.28em; line-height: 1.4; }
+    .mission-copy { max-width: 330px; margin: 0 0 3px; color: var(--muted); font-size: 0.73rem; line-height: 1.9; text-align: right; }
+
+    .game-layout { display: grid; grid-template-columns: 215px minmax(300px, 1fr) 215px; gap: 28px; align-items: start; }
+    .side-column { display: grid; gap: 16px; }
+    .info-card { position: relative; padding: 21px 20px; overflow: hidden; border: 1px solid var(--line); background: var(--panel); }
+    .info-card::after { position: absolute; right: -28px; bottom: -35px; width: 105px; height: 105px; border: 1px solid rgba(226, 179, 111, 0.13); border-radius: 50%; content: ""; }
+    .card-label { display: block; margin-bottom: 18px; color: var(--gold); font-family: Arial, sans-serif; font-size: 0.58rem; letter-spacing: 0.22em; }
+    .controls { display: grid; gap: 13px; }
+    .control-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 0.69rem; }
+    kbd { min-width: 27px; padding: 4px 6px; border: 1px solid rgba(239, 242, 233, 0.17); border-bottom-color: var(--gold); color: var(--paper); background: rgba(239, 242, 233, 0.05); font-family: Arial, sans-serif; font-size: 0.58rem; text-align: center; }
+    .tip { margin: 18px 0 0; padding-top: 15px; border-top: 1px solid var(--line); color: #6f8178; font-size: 0.61rem; line-height: 1.75; }
+    .signal-card { display: flex; align-items: center; gap: 11px; padding: 14px 16px; border: 1px solid var(--line); color: var(--gold); font-family: Arial, sans-serif; font-size: 0.54rem; letter-spacing: 0.12em; }
+    .signal-light { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 12px var(--gold); animation: blink 2.2s ease-in-out infinite; }
+
+    .board-column { display: grid; justify-items: center; }
+    .board-frame { position: relative; width: min(100%, 344px); padding: 21px; border: 1px solid var(--line); background: linear-gradient(135deg, rgba(18, 40, 32, 0.96), rgba(5, 14, 12, 0.96)); box-shadow: 0 20px 80px rgba(0, 0, 0, 0.3); }
+    .board-frame::before, .board-frame::after { position: absolute; width: 24px; height: 24px; content: ""; }
+    .board-frame::before { top: -1px; left: -1px; border-top: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+    .board-frame::after { right: -1px; bottom: -1px; border-right: 1px solid var(--gold); border-bottom: 1px solid var(--gold); }
+    .board-topline { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; color: var(--muted); font-family: Arial, sans-serif; font-size: 0.54rem; letter-spacing: 0.18em; }
+    .board-topline strong { color: var(--gold-bright); font-weight: 400; }
+    .board-stage { position: relative; width: 300px; max-width: 100%; margin: 0 auto; overflow: hidden; border: 1px solid rgba(226, 179, 111, 0.3); background: #07110f; }
+    #board { display: block; width: 300px; max-width: 100%; height: 600px; }
+    .game-overlay { position: absolute; inset: 0; display: grid; place-items: center; padding: 30px; background: rgba(5, 14, 12, 0.86); backdrop-filter: blur(4px); transition: opacity 200ms ease, visibility 200ms ease; }
+    .game-overlay.hidden { visibility: hidden; opacity: 0; pointer-events: none; }
+    .overlay-inner { width: 100%; text-align: center; }
+    .overlay-kicker { margin: 0 0 12px; color: var(--gold); font-family: Arial, sans-serif; font-size: 0.59rem; letter-spacing: 0.24em; }
+    .overlay-title { margin: 0; font-family: "Yu Mincho", serif; font-size: 1.55rem; font-weight: 400; letter-spacing: 0.16em; }
+    .overlay-text { margin: 15px 0 21px; color: var(--muted); font-size: 0.68rem; line-height: 1.8; }
+    .primary-button { border: 1px solid var(--gold); padding: 13px 19px; color: var(--bg); background: var(--gold); cursor: pointer; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.16em; transition: color 180ms ease, background 180ms ease; }
+    .primary-button:hover, .primary-button:focus-visible { color: var(--gold-bright); background: transparent; }
+    .board-footer { display: flex; justify-content: space-between; margin-top: 14px; color: #6f8178; font-family: Arial, sans-serif; font-size: 0.53rem; letter-spacing: 0.14em; }
+
+    .score-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; border: 1px solid var(--line); background: var(--line); }
+    .stat { min-height: 86px; padding: 16px 14px; background: var(--panel-solid); }
+    .stat:nth-child(1) { grid-column: span 2; }
+    .stat-label { display: block; margin-bottom: 9px; color: var(--muted); font-family: Arial, sans-serif; font-size: 0.55rem; letter-spacing: 0.17em; }
+    .stat-value { display: block; color: var(--gold-bright); font-family: Arial, sans-serif; font-size: 1.55rem; letter-spacing: 0.06em; line-height: 1; }
+    .mini-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .mini-card { padding: 18px 14px; border: 1px solid var(--line); background: var(--panel); }
+    .mini-card canvas { display: block; width: 96px; height: 72px; margin: 0 auto; }
+    .mini-label { display: block; margin-top: 13px; color: var(--muted); font-family: Arial, sans-serif; font-size: 0.56rem; letter-spacing: 0.18em; text-align: center; }
+    .game-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .action-button { border: 1px solid var(--line); padding: 12px 8px; color: var(--muted); background: var(--panel); cursor: pointer; font-size: 0.62rem; letter-spacing: 0.11em; transition: border-color 180ms ease, color 180ms ease, background 180ms ease; }
+    .action-button:hover, .action-button:focus-visible { border-color: var(--gold); color: var(--gold-bright); background: var(--panel-light); }
+    .high-score { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 0.62rem; }
+    .high-score strong { color: var(--gold); font-family: Arial, sans-serif; font-size: 0.78rem; font-weight: 400; }
+
+    .touch-controls { display: none; }
+    .page-foot { display: flex; align-items: center; justify-content: space-between; gap: 20px; width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 22px 0 28px; border-top: 1px solid var(--line); color: #61756b; font-family: Arial, sans-serif; font-size: 0.55rem; letter-spacing: 0.14em; }
+    .page-foot a { color: var(--gold); }
+    @keyframes blink { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+
+    @media (max-width: 950px) {
+      .game-layout { grid-template-columns: minmax(300px, 1fr) 210px; max-width: 600px; margin: 0 auto; }
+      .board-column { grid-row: span 2; grid-column: 1; }
+      .left-column { grid-column: 2; grid-row: 1; }
+      .right-column { grid-column: 2; grid-row: 2; }
+      .info-card { padding: 18px 16px; }
+      .game-heading { align-items: start; flex-direction: column; }
+      .mission-copy { max-width: 410px; text-align: left; }
+    }
+    @media (max-width: 650px) {
+      .topbar, .game-shell, .page-foot { width: calc(100% - 32px); }
+      .topbar { min-height: 68px; }
+      .brand { font-size: 0.6rem; }
+      .game-shell { padding: 46px 0 45px; }
+      .game-heading { margin-bottom: 30px; }
+      h1 { font-size: clamp(2.8rem, 14vw, 4.8rem); }
+      h1 span { font-size: 0.73rem; letter-spacing: 0.2em; }
+      .game-layout { display: flex; flex-direction: column; align-items: stretch; max-width: 344px; margin: 0 auto; }
+      .board-column { order: 1; }
+      .left-column { order: 2; }
+      .right-column { order: 3; }
+      .left-column, .right-column { grid-template-columns: 1fr 1fr; }
+      .left-column .info-card:first-child { grid-column: span 2; }
+      .right-column .score-grid { grid-column: span 2; }
+      .right-column { display: grid; grid-template-columns: 1fr 1fr; }
+      .right-column .game-actions { grid-column: span 2; }
+      .right-column .high-score { grid-column: span 2; }
+      .touch-controls { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; width: min(300px, 100%); margin-top: 15px; }
+      .touch-button { min-height: 42px; border: 1px solid var(--line); color: var(--gold); background: rgba(14, 31, 26, 0.9); cursor: pointer; font-size: 0.82rem; -webkit-tap-highlight-color: transparent; }
+      .touch-button:active { color: var(--bg); background: var(--gold); }
+      .touch-button-wide { grid-column: span 2; }
+      .touch-button span { display: block; margin-top: 3px; color: var(--muted); font-size: 0.48rem; letter-spacing: 0.08em; }
+      .page-foot { align-items: start; flex-direction: column; line-height: 1.7; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="back-link" href="index.html"><span aria-hidden="true">←</span> BACK TO ARCHIVE</a>
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span>VIVANT / PLAYGROUND</a>
+  </header>
+
+  <main class="game-shell">
+    <div class="game-heading">
+      <div><p class="eyebrow">MISSION / BLOCKS IN MOTION</p><h1>TETRIS<span>落ちてくる謎を、積み上げろ。</span></h1></div>
+      <p class="mission-copy">7つのピースを操り、ラインを消していく。判断は一瞬。最後まで積み上げられるか。</p>
+    </div>
+
+    <div class="game-layout">
+      <aside class="side-column left-column" aria-label="操作情報">
+        <section class="info-card">
+          <span class="card-label">CONTROL / KEYBOARD</span>
+          <div class="controls">
+            <div class="control-row"><span>左右に移動</span><span><kbd>←</kbd> <kbd>→</kbd></span></div>
+            <div class="control-row"><span>ソフトドロップ</span><kbd>↓</kbd></div>
+            <div class="control-row"><span>回転</span><kbd>↑</kbd></div>
+            <div class="control-row"><span>ハードドロップ</span><kbd>SPACE</kbd></div>
+            <div class="control-row"><span>ホールド</span><kbd>C</kbd></div>
+            <div class="control-row"><span>一時停止</span><kbd>P</kbd></div>
+          </div>
+          <p class="tip">スマートフォンではボード下のボタンから操作できます。</p>
+        </section>
+        <div class="signal-card"><span class="signal-light" aria-hidden="true"></span>LIVE SYSTEM / READY</div>
+      </aside>
+
+      <section class="board-column" aria-label="テトリスゲーム">
+        <div class="board-frame">
+          <div class="board-topline"><span>FIELD / 10 × 20</span><strong id="game-status">STANDBY</strong></div>
+          <div class="board-stage">
+            <canvas id="board" width="300" height="600" aria-label="テトリスのゲームボード"></canvas>
+            <div class="game-overlay" id="game-overlay">
+              <div class="overlay-inner">
+                <p class="overlay-kicker" id="overlay-kicker">MISSION BRIEFING</p>
+                <h2 class="overlay-title" id="overlay-title">ゲームを開始</h2>
+                <p class="overlay-text" id="overlay-text">落下するブロックを操作して、<br>横一列を完成させよう。</p>
+                <button class="primary-button" id="start-button" type="button">START MISSION</button>
+              </div>
+            </div>
+          </div>
+          <div class="board-footer"><span>NO SPOILERS / JUST BLOCKS</span><span>V.01</span></div>
+        </div>
+        <div class="touch-controls" aria-label="タッチ操作">
+          <button class="touch-button" type="button" data-action="left" aria-label="左へ移動">←<span>MOVE</span></button>
+          <button class="touch-button" type="button" data-action="rotate" aria-label="回転">↻<span>ROTATE</span></button>
+          <button class="touch-button" type="button" data-action="right" aria-label="右へ移動">→<span>MOVE</span></button>
+          <button class="touch-button touch-button-wide" type="button" data-action="down" aria-label="下へ移動">↓<span>DROP</span></button>
+          <button class="touch-button touch-button-wide" type="button" data-action="hard" aria-label="一気に落とす">⇣<span>HARD DROP</span></button>
+        </div>
+      </section>
+
+      <aside class="side-column right-column" aria-label="ゲーム情報">
+        <div class="score-grid">
+          <div class="stat"><span class="stat-label">SCORE</span><strong class="stat-value" id="score">000000</strong></div>
+          <div class="stat"><span class="stat-label">LINES</span><strong class="stat-value" id="lines">00</strong></div>
+          <div class="stat"><span class="stat-label">LEVEL</span><strong class="stat-value" id="level">01</strong></div>
+        </div>
+        <div class="mini-row">
+          <div class="mini-card"><canvas id="hold-canvas" width="96" height="72" aria-label="ホールド中のピース"></canvas><span class="mini-label">HOLD / C</span></div>
+          <div class="mini-card"><canvas id="next-canvas" width="96" height="72" aria-label="次のピース"></canvas><span class="mini-label">NEXT</span></div>
+        </div>
+        <div class="game-actions"><button class="action-button" id="pause-button" type="button">PAUSE / P</button><button class="action-button" id="restart-button" type="button">RESTART</button></div>
+        <div class="info-card high-score"><span>BEST SCORE</span><strong id="best-score">000000</strong></div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="page-foot"><span>VIVANT / PLAYGROUND — TETRIS EDITION</span><a href="index.html">RETURN TO ARCHIVE ↗</a></footer>
+
+  <script>
+    (() => {
+      const COLS = 10;
+      const ROWS = 20;
+      const CELL = 30;
+      const PIECE_COLORS = { I: "#5fd2cf", J: "#6791f2", L: "#efa66b", O: "#efd073", S: "#75c78a", T: "#b78bef", Z: "#df7079" };
+      const PIECES = {
+        I: [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]],
+        J: [[1, 0, 0], [1, 1, 1], [0, 0, 0]],
+        L: [[0, 0, 1], [1, 1, 1], [0, 0, 0]],
+        O: [[1, 1], [1, 1]],
+        S: [[0, 1, 1], [1, 1, 0], [0, 0, 0]],
+        T: [[0, 1, 0], [1, 1, 1], [0, 0, 0]],
+        Z: [[1, 1, 0], [0, 1, 1], [0, 0, 0]]
+      };
+      const canvas = document.querySelector("#board");
+      const ctx = canvas.getContext("2d");
+      const nextCanvas = document.querySelector("#next-canvas");
+      const holdCanvas = document.querySelector("#hold-canvas");
+      const nextCtx = nextCanvas.getContext("2d");
+      const holdCtx = holdCanvas.getContext("2d");
+      const scoreEl = document.querySelector("#score");
+      const linesEl = document.querySelector("#lines");
+      const levelEl = document.querySelector("#level");
+      const bestEl = document.querySelector("#best-score");
+      const statusEl = document.querySelector("#game-status");
+      const overlay = document.querySelector("#game-overlay");
+      const overlayKicker = document.querySelector("#overlay-kicker");
+      const overlayTitle = document.querySelector("#overlay-title");
+      const overlayText = document.querySelector("#overlay-text");
+      const startButton = document.querySelector("#start-button");
+      const pauseButton = document.querySelector("#pause-button");
+      const restartButton = document.querySelector("#restart-button");
+
+      let board = createBoard();
+      let current = null;
+      let nextQueue = [];
+      let heldType = null;
+      let canHold = true;
+      let score = 0;
+      let lines = 0;
+      let level = 1;
+      let started = false;
+      let paused = false;
+      let gameOver = false;
+      let dropCounter = 0;
+      let lastTime = 0;
+      let bestScore = Number(localStorage.getItem("vivant-tetris-best") || 0);
+      bestEl.textContent = formatNumber(bestScore);
+
+      function createBoard() { return Array.from({ length: ROWS }, () => Array(COLS).fill(null)); }
+
+      function shuffleBag() {
+        const bag = Object.keys(PIECES);
+        for (let i = bag.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [bag[i], bag[j]] = [bag[j], bag[i]];
+        }
+        return bag;
+      }
+
+      function refillQueue() {
+        while (nextQueue.length < 5) nextQueue.push(...shuffleBag());
+      }
+
+      function createPiece(type) {
+        const matrix = PIECES[type].map((row) => row.slice());
+        return { type, matrix, x: Math.floor((COLS - matrix[0].length) / 2), y: 0 };
+      }
+
+      function collides(piece, offsetX = 0, offsetY = 0, matrix = piece.matrix) {
+        for (let row = 0; row < matrix.length; row += 1) {
+          for (let col = 0; col < matrix[row].length; col += 1) {
+            if (!matrix[row][col]) continue;
+            const x = piece.x + col + offsetX;
+            const y = piece.y + row + offsetY;
+            if (x < 0 || x >= COLS || y >= ROWS) return true;
+            if (y >= 0 && board[y][x]) return true;
+          }
+        }
+        return false;
+      }
+
+      function spawnPiece() {
+        refillQueue();
+        current = createPiece(nextQueue.shift());
+        refillQueue();
+        canHold = true;
+        drawPreviews();
+        if (collides(current)) endGame();
+      }
+
+      function mergePiece() {
+        current.matrix.forEach((row, rowIndex) => row.forEach((cell, colIndex) => {
+          if (!cell) return;
+          const y = current.y + rowIndex;
+          const x = current.x + colIndex;
+          if (y >= 0) board[y][x] = current.type;
+        }));
+      }
+
+      function clearLines() {
+        let cleared = 0;
+        outer: for (let y = ROWS - 1; y >= 0; y -= 1) {
+          for (let x = 0; x < COLS; x += 1) if (!board[y][x]) continue outer;
+          board.splice(y, 1);
+          board.unshift(Array(COLS).fill(null));
+          cleared += 1;
+          y += 1;
+        }
+        if (!cleared) return;
+        const rewards = [0, 100, 300, 500, 800];
+        score += rewards[cleared] * level;
+        lines += cleared;
+        level = Math.floor(lines / 10) + 1;
+        updateStats();
+      }
+
+      function lockPiece() {
+        mergePiece();
+        clearLines();
+        spawnPiece();
+        dropCounter = 0;
+      }
+
+      function movePiece(direction) {
+        if (!started || paused || gameOver || !current) return;
+        if (!collides(current, direction, 0)) current.x += direction;
+      }
+
+      function softDrop() {
+        if (!started || paused || gameOver || !current) return;
+        if (!collides(current, 0, 1)) { current.y += 1; score += 1; updateStats(); }
+        else lockPiece();
+        dropCounter = 0;
+      }
+
+      function hardDrop() {
+        if (!started || paused || gameOver || !current) return;
+        let distance = 0;
+        while (!collides(current, 0, distance + 1)) distance += 1;
+        current.y += distance;
+        score += distance * 2;
+        updateStats();
+        lockPiece();
+      }
+
+      function rotateMatrix(matrix) {
+        return matrix[0].map((_, index) => matrix.map((row) => row[index]).reverse());
+      }
+
+      function rotatePiece() {
+        if (!started || paused || gameOver || !current) return;
+        const rotated = rotateMatrix(current.matrix);
+        for (const offset of [0, -1, 1, -2, 2]) {
+          if (!collides(current, offset, 0, rotated)) {
+            current.x += offset;
+            current.matrix = rotated;
+            return;
+          }
+        }
+      }
+
+      function holdPiece() {
+        if (!started || paused || gameOver || !current || !canHold) return;
+        const outgoing = current.type;
+        if (heldType) {
+          current = createPiece(heldType);
+          heldType = outgoing;
+          if (collides(current)) endGame();
+        } else {
+          heldType = outgoing;
+          spawnPiece();
+        }
+        canHold = false;
+        drawPreviews();
+      }
+
+      function getGhostY() {
+        let distance = 0;
+        while (!collides(current, 0, distance + 1)) distance += 1;
+        return current.y + distance;
+      }
+
+      function drawCell(context, x, y, color, size = CELL, ghost = false) {
+        const inset = Math.max(2, size * 0.08);
+        const px = x * size + inset;
+        const py = y * size + inset;
+        const width = size - inset * 2;
+        context.save();
+        if (ghost) {
+          context.strokeStyle = color;
+          context.globalAlpha = 0.42;
+          context.lineWidth = 1;
+          context.strokeRect(px + 0.5, py + 0.5, width - 1, width - 1);
+        } else {
+          context.fillStyle = color;
+          context.globalAlpha = 0.98;
+          context.fillRect(px, py, width, width);
+          context.fillStyle = "rgba(255,255,255,0.3)";
+          context.fillRect(px, py, width, Math.max(1, size * 0.07));
+          context.fillStyle = "rgba(0,0,0,0.23)";
+          context.fillRect(px, py + width - Math.max(1, size * 0.07), width, Math.max(1, size * 0.07));
+        }
+        context.restore();
+      }
+
+      function drawBoard() {
+        ctx.clearRect(0, 0, COLS * CELL, ROWS * CELL);
+        ctx.fillStyle = "#07110f";
+        ctx.fillRect(0, 0, COLS * CELL, ROWS * CELL);
+        ctx.strokeStyle = "rgba(197, 224, 204, 0.055)";
+        ctx.lineWidth = 1;
+        for (let x = 1; x < COLS; x += 1) { ctx.beginPath(); ctx.moveTo(x * CELL + 0.5, 0); ctx.lineTo(x * CELL + 0.5, ROWS * CELL); ctx.stroke(); }
+        for (let y = 1; y < ROWS; y += 1) { ctx.beginPath(); ctx.moveTo(0, y * CELL + 0.5); ctx.lineTo(COLS * CELL, y * CELL + 0.5); ctx.stroke(); }
+        board.forEach((row, y) => row.forEach((type, x) => { if (type) drawCell(ctx, x, y, PIECE_COLORS[type]); }));
+        if (!current) return;
+        const ghostY = getGhostY();
+        current.matrix.forEach((row, rowIndex) => row.forEach((cell, colIndex) => {
+          if (!cell) return;
+          if (ghostY !== current.y) drawCell(ctx, current.x + colIndex, ghostY + rowIndex, PIECE_COLORS[current.type], CELL, true);
+        }));
+        current.matrix.forEach((row, rowIndex) => row.forEach((cell, colIndex) => {
+          if (cell && current.y + rowIndex >= 0) drawCell(ctx, current.x + colIndex, current.y + rowIndex, PIECE_COLORS[current.type]);
+        }));
+      }
+
+      function drawMini(context, type) {
+        context.clearRect(0, 0, 96, 72);
+        context.fillStyle = "#0a1713";
+        context.fillRect(0, 0, 96, 72);
+        if (!type) return;
+        const matrix = PIECES[type];
+        const size = 18;
+        const width = matrix[0].length * size;
+        const height = matrix.length * size;
+        const startX = (96 - width) / 2;
+        const startY = (72 - height) / 2;
+        matrix.forEach((row, y) => row.forEach((cell, x) => {
+          if (!cell) return;
+          drawCellAt(context, startX + x * size, startY + y * size, PIECE_COLORS[type], size);
+        }));
+      }
+
+      function drawCellAt(context, px, py, color, size) {
+        const inset = 2;
+        context.fillStyle = color;
+        context.fillRect(px + inset, py + inset, size - inset * 2, size - inset * 2);
+        context.fillStyle = "rgba(255,255,255,0.3)";
+        context.fillRect(px + inset, py + inset, size - inset * 2, 1);
+      }
+
+      function drawPreviews() { drawMini(nextCtx, nextQueue[0]); drawMini(holdCtx, heldType); }
+
+      function formatNumber(value) { return String(value).padStart(6, "0"); }
+
+      function updateStats() {
+        scoreEl.textContent = formatNumber(score);
+        linesEl.textContent = String(lines).padStart(2, "0");
+        levelEl.textContent = String(level).padStart(2, "0");
+        if (score > bestScore) {
+          bestScore = score;
+          bestEl.textContent = formatNumber(bestScore);
+          localStorage.setItem("vivant-tetris-best", String(bestScore));
+        }
+      }
+
+      function showOverlay(kicker, title, text, buttonText) {
+        overlayKicker.textContent = kicker;
+        overlayTitle.textContent = title;
+        overlayText.innerHTML = text;
+        startButton.textContent = buttonText;
+        overlay.classList.remove("hidden");
+      }
+
+      function startGame() {
+        board = createBoard();
+        nextQueue = [];
+        heldType = null;
+        score = 0;
+        lines = 0;
+        level = 1;
+        started = true;
+        paused = false;
+        gameOver = false;
+        canHold = true;
+        refillQueue();
+        spawnPiece();
+        updateStats();
+        statusEl.textContent = "LIVE";
+        overlay.classList.add("hidden");
+        pauseButton.textContent = "PAUSE / P";
+        lastTime = performance.now();
+        dropCounter = 0;
+      }
+
+      function endGame() {
+        gameOver = true;
+        paused = false;
+        statusEl.textContent = "MISSION FAILED";
+        showOverlay("GAME OVER", "もう一度挑戦する", `スコア <strong style="color:var(--gold-bright)">${formatNumber(score)}</strong><br>次のラインを読み切れ。`, "RESTART MISSION");
+      }
+
+      function togglePause() {
+        if (!started || gameOver) return;
+        paused = !paused;
+        statusEl.textContent = paused ? "PAUSED" : "LIVE";
+        pauseButton.textContent = paused ? "RESUME / P" : "PAUSE / P";
+        if (paused) showOverlay("SYSTEM PAUSED", "一時停止中", "準備ができたら、ゲームを再開しよう。", "RESUME MISSION");
+        else overlay.classList.add("hidden");
+      }
+
+      function handleAction(action) {
+        if (action === "left") movePiece(-1);
+        if (action === "right") movePiece(1);
+        if (action === "rotate") rotatePiece();
+        if (action === "down") softDrop();
+        if (action === "hard") hardDrop();
+      }
+
+      function gameLoop(time = 0) {
+        const delta = time - lastTime;
+        lastTime = time;
+        if (started && !paused && !gameOver && current) {
+          dropCounter += delta;
+          const interval = Math.max(95, 800 - (level - 1) * 65);
+          if (dropCounter > interval) {
+            if (!collides(current, 0, 1)) current.y += 1;
+            else lockPiece();
+            dropCounter = 0;
+          }
+        }
+        drawBoard();
+        requestAnimationFrame(gameLoop);
+      }
+
+      startButton.addEventListener("click", () => { if (paused) togglePause(); else startGame(); });
+      pauseButton.addEventListener("click", togglePause);
+      restartButton.addEventListener("click", startGame);
+      document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", () => handleAction(button.dataset.action)));
+      document.addEventListener("keydown", (event) => {
+        const key = event.key.toLowerCase();
+        if (["arrowleft", "arrowright", "arrowdown", "arrowup", " "].includes(event.key.toLowerCase()) || key === "c" || key === "p") event.preventDefault();
+        if (key === "p") { togglePause(); return; }
+        if (key === "c") { holdPiece(); return; }
+        if (event.key === "ArrowLeft") movePiece(-1);
+        if (event.key === "ArrowRight") movePiece(1);
+        if (event.key === "ArrowDown") softDrop();
+        if (event.key === "ArrowUp") rotatePiece();
+        if (event.key === " ") hardDrop();
+      });
+      drawPreviews();
+      drawBoard();
+      requestAnimationFrame(gameLoop);
+    })();
+  </script>
+</body>
+</html>
