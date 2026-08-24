@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="HORI / SHORT SLEEP — 堀大輔さんのショートスリーパー論と、時間の使い方を考えるファンサイト。">
+  <title>HORI / SHORT SLEEP</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --night: #070a12;
+      --night-soft: #0c1120;
+      --panel: #101728;
+      --ink: #f2f4fb;
+      --muted: #8893ab;
+      --line: rgba(190, 205, 239, 0.16);
+      --aqua: #8ef5de;
+      --violet: #9385ff;
+      --orange: #ffad73;
+      --sans: "Manrope", "Hiragino Sans", "Yu Gothic", sans-serif;
+      --mono: "DM Mono", "SFMono-Regular", Consolas, monospace;
+      --max: 1240px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; overflow-x: hidden; color: var(--ink); background: var(--night); font-family: var(--sans); }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+    .shell { width: min(var(--max), calc(100% - 80px)); margin: 0 auto; }
+    .eyebrow { margin: 0; color: var(--aqua); font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; }
+    .eyebrow::before { display: inline-block; width: 26px; height: 1px; margin: 0 12px 3px 0; background: currentColor; content: ""; }
+    .section { position: relative; padding: 148px 0; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 42px; margin-bottom: 68px; }
+    .section-heading h2 { max-width: 640px; margin: 19px 0 0; font-size: clamp(2.7rem, 6vw, 5.8rem); font-weight: 600; letter-spacing: -0.08em; line-height: 0.98; }
+    .section-heading > p { max-width: 260px; margin: 0 0 6px; color: var(--muted); font-size: 0.77rem; line-height: 1.9; }
+
+    .site-header { position: fixed; top: 0; right: 0; left: 0; z-index: 10; border-bottom: 1px solid transparent; transition: background 220ms ease, border-color 220ms ease; }
+    .site-header.scrolled { border-color: var(--line); background: rgba(7, 10, 18, 0.84); backdrop-filter: blur(16px); }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; width: min(var(--max), calc(100% - 80px)); height: 82px; margin: 0 auto; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.13em; }
+    .brand-mark { position: relative; display: inline-block; width: 24px; height: 24px; border: 1px solid var(--aqua); border-radius: 50%; }
+    .brand-mark::before, .brand-mark::after { position: absolute; background: var(--aqua); content: ""; }
+    .brand-mark::before { top: 5px; left: 5px; width: 12px; height: 12px; border-radius: 50%; opacity: 0.75; }
+    .brand-mark::after { top: -6px; left: 11px; width: 1px; height: 35px; transform: rotate(38deg); transform-origin: center; opacity: 0.55; }
+    .main-nav { display: flex; align-items: center; gap: 31px; margin-left: auto; margin-right: 38px; }
+    .main-nav a { color: var(--muted); font-family: var(--mono); font-size: 0.61rem; letter-spacing: 0.13em; transition: color 180ms ease; }
+    .main-nav a:hover, .main-nav a:focus-visible { color: var(--ink); }
+    .header-cta { display: inline-flex; align-items: center; gap: 9px; padding: 11px 15px; border: 1px solid var(--aqua); color: var(--aqua); font-family: var(--mono); font-size: 0.59rem; letter-spacing: 0.12em; transition: color 180ms ease, background 180ms ease; }
+    .header-cta:hover, .header-cta:focus-visible { color: var(--night); background: var(--aqua); }
+    .menu-button { display: none; border: 0; padding: 8px 0 8px 8px; background: transparent; cursor: pointer; }
+    .menu-button span { display: block; width: 25px; height: 1px; margin: 6px 0; background: var(--ink); transition: transform 180ms ease; }
+    .mobile-nav { display: none; }
+
+    .hero { position: relative; min-height: 890px; overflow: hidden; background: radial-gradient(circle at 75% 42%, rgba(91, 71, 188, 0.24), transparent 26%), radial-gradient(circle at 18% 72%, rgba(30, 164, 145, 0.12), transparent 28%), var(--night); }
+    .hero::before { position: absolute; inset: 0; opacity: 0.32; background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 72px 72px; mask-image: linear-gradient(90deg, black, transparent 85%); content: ""; }
+    .hero::after { position: absolute; top: 150px; right: 7%; width: 1px; height: 400px; background: linear-gradient(transparent, var(--aqua), transparent); opacity: 0.35; content: ""; }
+    .hero-orbit { position: absolute; top: 50%; right: 7%; width: min(47vw, 590px); aspect-ratio: 1; transform: translateY(-45%); border: 1px solid rgba(142, 245, 222, 0.35); border-radius: 50%; }
+    .hero-orbit::before, .hero-orbit::after { position: absolute; inset: 9%; border: 1px solid rgba(147, 133, 255, 0.23); border-radius: 50%; content: ""; }
+    .hero-orbit::after { inset: 23%; border-color: rgba(142, 245, 222, 0.22); }
+    .hero-core { position: absolute; top: 50%; left: 50%; width: 37%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle at 32% 28%, #e8fff9 0 4%, var(--aqua) 12%, #596cff 43%, #171732 74%, transparent 75%); box-shadow: 0 0 80px rgba(142, 245, 222, 0.29), 0 0 150px rgba(147, 133, 255, 0.25); }
+    .hero-core::after { position: absolute; inset: -34%; border: 1px solid rgba(255, 173, 115, 0.35); border-radius: 50%; transform: rotate(-21deg) scaleY(0.32); content: ""; }
+    .hero-orbit-label { position: absolute; right: 7%; bottom: 12%; color: rgba(242, 244, 251, 0.48); font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.15em; writing-mode: vertical-rl; }
+    .hero-inner { position: relative; z-index: 1; display: flex; align-items: center; min-height: 890px; }
+    .hero-copy { max-width: 700px; padding-top: 58px; }
+    .hero-copy .eyebrow { color: var(--orange); }
+    .hero-title { margin: 28px 0 20px; font-size: clamp(5.3rem, 15vw, 13.5rem); font-weight: 700; letter-spacing: -0.12em; line-height: 0.78; }
+    .hero-subtitle { margin: 0; color: var(--aqua); font-size: clamp(1.1rem, 2.2vw, 1.7rem); letter-spacing: 0.08em; }
+    .hero-lede { max-width: 420px; margin: 32px 0 0; color: var(--muted); font-size: 0.82rem; line-height: 2; }
+    .hero-actions { display: flex; align-items: center; gap: 24px; margin-top: 42px; }
+    .button { display: inline-flex; align-items: center; gap: 17px; padding: 15px 18px; border: 1px solid var(--aqua); color: var(--night); background: var(--aqua); font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.09em; transition: transform 180ms ease, background 180ms ease; }
+    .button:hover, .button:focus-visible { transform: translateY(-3px); background: var(--ink); }
+    .text-link { color: var(--muted); font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; transition: color 180ms ease; }
+    .text-link span { margin-left: 8px; color: var(--aqua); font-size: 0.9rem; }
+    .text-link:hover, .text-link:focus-visible { color: var(--ink); }
+    .hero-index { position: absolute; right: 0; bottom: 56px; left: 0; display: flex; justify-content: space-between; color: rgba(242, 244, 251, 0.46); font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.15em; }
+    .scroll-cue { display: inline-flex; align-items: center; gap: 15px; }
+    .scroll-cue::after { display: inline-block; width: 47px; height: 1px; background: var(--aqua); content: ""; }
+
+    .signal-band { overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--aqua); background: #0a1020; }
+    .signal-track { display: flex; width: max-content; gap: 40px; padding: 18px 0; font-family: var(--mono); font-size: 0.61rem; letter-spacing: 0.17em; animation: drift 26s linear infinite; }
+    .signal-track span:nth-child(3n) { color: var(--orange); }
+    @keyframes drift { to { transform: translateX(-33.333%); } }
+
+    .manifesto { background: var(--night-soft); }
+    .manifesto-layout { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 10%; align-items: center; }
+    .manifesto-copy h3 { max-width: 650px; margin: 22px 0 30px; font-size: clamp(2.2rem, 4.5vw, 4.6rem); font-weight: 600; letter-spacing: -0.08em; line-height: 1.04; }
+    .manifesto-copy h3 em { color: var(--aqua); font-style: normal; }
+    .manifesto-copy > p { max-width: 490px; margin: 0; color: var(--muted); font-size: 0.82rem; line-height: 2.05; }
+    .manifesto-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 52px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--line); }
+    .manifesto-fact { min-height: 112px; padding: 21px 15px; background: var(--night-soft); }
+    .manifesto-fact strong { display: block; margin-bottom: 11px; color: var(--ink); font-family: var(--mono); font-size: 1.6rem; font-weight: 400; letter-spacing: -0.05em; }
+    .manifesto-fact span { color: var(--muted); font-size: 0.59rem; line-height: 1.5; }
+    .radio-card { position: relative; min-height: 520px; overflow: hidden; padding: 25px; border: 1px solid var(--line); background: linear-gradient(145deg, #18253b, #0d1024 60%, #261539); }
+    .radio-card::before { position: absolute; right: -15%; bottom: -14%; width: 80%; aspect-ratio: 1; border: 1px solid rgba(142, 245, 222, 0.4); border-radius: 50%; box-shadow: 0 0 0 28px rgba(142, 245, 222, 0.04), 0 0 0 56px rgba(142, 245, 222, 0.03); content: ""; }
+    .radio-card::after { position: absolute; top: 18%; left: 15%; width: 43%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f1f8ff, #8ef5de 10%, #514dff 46%, transparent 67%); opacity: 0.88; content: ""; }
+    .radio-top, .radio-bottom { position: relative; z-index: 1; display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em; }
+    .radio-top span:last-child { color: var(--aqua); }
+    .radio-copy { position: absolute; z-index: 1; right: 25px; bottom: 26px; left: 25px; }
+    .radio-copy strong { display: block; max-width: 280px; font-size: clamp(2.2rem, 4vw, 3.8rem); font-weight: 600; letter-spacing: -0.09em; line-height: 0.92; }
+    .radio-copy p { max-width: 210px; margin: 19px 0 0; color: var(--muted); font-size: 0.68rem; line-height: 1.8; }
+    .radio-bottom { position: absolute; right: 25px; bottom: 25px; left: 25px; color: var(--aqua); }
+
+    .signals { background: var(--night); }
+    .filter-row { display: flex; gap: 8px; margin: -31px 0 37px; }
+    .filter-button { border: 1px solid var(--line); padding: 10px 14px; color: var(--muted); background: transparent; cursor: pointer; font-family: var(--mono); font-size: 0.57rem; letter-spacing: 0.11em; transition: border-color 180ms ease, color 180ms ease, background 180ms ease; }
+    .filter-button:hover, .filter-button:focus-visible, .filter-button.active { border-color: var(--aqua); color: var(--night); background: var(--aqua); }
+    .event-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .event-card { display: flex; flex-direction: column; min-height: 420px; border: 1px solid var(--line); background: var(--panel); transition: transform 220ms ease, border-color 220ms ease; }
+    .event-card:hover { transform: translateY(-7px); border-color: rgba(142, 245, 222, 0.6); }
+    .event-card.is-hidden { display: none; }
+    .event-art { position: relative; min-height: 235px; overflow: hidden; background: #181e3d; }
+    .event-art::before, .event-art::after { position: absolute; content: ""; }
+    .event-art::after { inset: 18px; border: 1px solid rgba(255,255,255,0.24); }
+    .event-card:nth-child(1) .event-art { background: radial-gradient(circle at 60% 42%, #fff0cf 0 4%, transparent 5%), radial-gradient(circle at 65% 45%, #ffad73, transparent 23%), linear-gradient(125deg, #391831, #111429 58%, #0e897d); }
+    .event-card:nth-child(1) .event-art::before { top: 27%; left: 27%; width: 120px; height: 120px; border: 1px solid rgba(255, 173, 115, 0.76); border-radius: 50%; box-shadow: 0 0 0 18px rgba(255, 173, 115, 0.12), 0 0 0 44px rgba(255, 173, 115, 0.06); }
+    .event-card:nth-child(2) .event-art { background: linear-gradient(45deg, transparent 49%, rgba(142,245,222,0.8) 50%, transparent 51%), linear-gradient(-45deg, transparent 49%, rgba(147,133,255,0.8) 50%, transparent 51%), #111c37; background-size: 84px 84px; }
+    .event-card:nth-child(2) .event-art::before { top: 50%; left: 50%; width: 145px; height: 145px; transform: translate(-50%, -50%) rotate(45deg); border: 1px solid var(--aqua); background: rgba(7,10,18,0.35); box-shadow: 0 0 55px rgba(142,245,222,0.38); }
+    .event-card:nth-child(3) .event-art { background: radial-gradient(ellipse at 50% 65%, #b59cff 0 8%, transparent 9%), radial-gradient(ellipse at 50% 65%, rgba(147,133,255,0.5) 0 24%, transparent 25%), linear-gradient(#0d1836, #241a43); }
+    .event-card:nth-child(3) .event-art::before { top: 17%; left: 50%; width: 1px; height: 73%; background: linear-gradient(var(--aqua), transparent); box-shadow: 0 0 32px 2px rgba(142,245,222,0.45); }
+    .event-art-label { position: absolute; z-index: 1; top: 20px; left: 20px; color: var(--ink); font-family: var(--mono); font-size: 0.54rem; letter-spacing: 0.15em; }
+    .event-info { display: flex; flex: 1; flex-direction: column; padding: 23px 23px 25px; }
+    .event-meta { display: flex; justify-content: space-between; margin-bottom: 22px; color: var(--aqua); font-family: var(--mono); font-size: 0.54rem; letter-spacing: 0.1em; }
+    .event-meta span:last-child { color: var(--muted); }
+    .event-info h3 { margin: 0; font-size: 1.3rem; font-weight: 600; letter-spacing: -0.04em; }
+    .event-info p { margin: 13px 0 0; color: var(--muted); font-size: 0.69rem; line-height: 1.85; }
+    .event-link { margin-top: auto; padding-top: 24px; color: var(--ink); font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.11em; }
+    .event-link span { margin-left: 9px; color: var(--aqua); }
+
+    .field-note { overflow: hidden; background: #0b111f; }
+    .field-note-layout { display: grid; grid-template-columns: 0.72fr 1.28fr; gap: 11%; align-items: start; }
+    .field-note-copy h2 { margin: 20px 0 28px; font-size: clamp(2.7rem, 5vw, 5.2rem); font-weight: 600; letter-spacing: -0.09em; line-height: 0.96; }
+    .field-note-copy p { max-width: 350px; margin: 0; color: var(--muted); font-size: 0.78rem; line-height: 2; }
+    .field-note-copy .text-link { display: inline-block; margin-top: 37px; }
+    .timeline { border-top: 1px solid var(--line); }
+    .timeline-row { display: grid; grid-template-columns: 115px 1fr 100px; gap: 20px; align-items: center; min-height: 99px; border-bottom: 1px solid var(--line); }
+    .timeline-row time { color: var(--orange); font-family: var(--mono); font-size: 0.59rem; letter-spacing: 0.09em; }
+    .timeline-row h3 { margin: 0; font-size: 1.02rem; font-weight: 500; letter-spacing: -0.03em; }
+    .timeline-row h3 span { display: block; margin-top: 6px; color: var(--muted); font-size: 0.65rem; font-weight: 400; }
+    .timeline-row > span { justify-self: end; color: var(--muted); font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em; }
+
+    .join { padding: 112px 0; border-top: 1px solid var(--line); background: radial-gradient(circle at 85% 50%, rgba(147,133,255,0.22), transparent 35%), #11142b; }
+    .join-layout { display: grid; grid-template-columns: 1fr 0.75fr; gap: 10%; align-items: end; }
+    .join h2 { max-width: 580px; margin: 19px 0 0; font-size: clamp(2.7rem, 6vw, 6.5rem); font-weight: 600; letter-spacing: -0.1em; line-height: 0.92; }
+    .join-copy p { max-width: 420px; margin: 25px 0 0; color: var(--muted); font-size: 0.78rem; line-height: 1.9; }
+    .join-form-wrap { align-self: end; }
+    .join-form { display: flex; align-items: stretch; border-bottom: 1px solid var(--aqua); }
+    .join-form input { min-width: 0; flex: 1; border: 0; padding: 13px 0; outline: 0; color: var(--ink); background: transparent; font-size: 0.73rem; }
+    .join-form input::placeholder { color: var(--muted); }
+    .join-form button { border: 0; padding: 13px 0 13px 14px; color: var(--aqua); background: transparent; cursor: pointer; font-family: var(--mono); font-size: 0.59rem; letter-spacing: 0.1em; }
+    .form-status { min-height: 22px; margin: 15px 0 0; color: var(--aqua); font-family: var(--mono); font-size: 0.57rem; letter-spacing: 0.08em; }
+    .source-links { margin: 17px 0 0; color: var(--muted); font-size: 0.62rem; line-height: 2.1; }
+    .source-links a { border-bottom: 1px solid rgba(142, 245, 222, 0.28); color: var(--aqua); }
+
+    footer { padding: 42px 0 29px; border-top: 1px solid var(--line); background: var(--night); }
+    .footer-top, .footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .footer-logo { margin: 0; font-size: 1.7rem; font-weight: 700; letter-spacing: -0.09em; }
+    .footer-copy { margin: 0; color: var(--muted); font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.08em; }
+    .footer-bottom { margin-top: 55px; color: var(--muted); font-family: var(--mono); font-size: 0.51rem; letter-spacing: 0.08em; }
+    .footer-bottom a { color: var(--aqua); }
+
+    .reveal { opacity: 0; transform: translateY(25px); transition: opacity 720ms ease, transform 720ms ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } .reveal { opacity: 1; transform: none; } }
+
+    @media (max-width: 900px) {
+      .shell, .header-inner { width: min(var(--max), calc(100% - 48px)); }
+      .main-nav, .header-cta { display: none; }
+      .menu-button { display: block; }
+      .mobile-nav { position: absolute; top: 82px; right: 24px; left: 24px; display: grid; max-height: 0; overflow: hidden; border: 1px solid transparent; background: rgba(7,10,18,0.96); opacity: 0; transition: max-height 220ms ease, opacity 180ms ease, border-color 180ms ease; }
+      .mobile-nav.open { max-height: 270px; border-color: var(--line); opacity: 1; }
+      .mobile-nav a { padding: 16px 19px; border-bottom: 1px solid var(--line); color: var(--muted); font-family: var(--mono); font-size: 0.59rem; letter-spacing: 0.12em; }
+      .mobile-nav a:last-child { border-bottom: 0; }
+      .hero-orbit { right: -8%; width: 59vw; opacity: 0.75; }
+      .manifesto-layout, .field-note-layout, .join-layout { grid-template-columns: 1fr; gap: 61px; }
+      .event-grid { grid-template-columns: 1fr 1fr; }
+      .event-card:last-child { grid-column: span 2; }
+      .join-layout { gap: 43px; }
+    }
+
+    @media (max-width: 620px) {
+      .shell, .header-inner { width: calc(100% - 36px); }
+      .section { padding: 103px 0; }
+      .section-heading { display: block; margin-bottom: 49px; }
+      .section-heading > p { margin-top: 22px; }
+      .hero { min-height: 790px; }
+      .hero-inner { min-height: 790px; align-items: end; padding-bottom: 120px; }
+      .hero-orbit { top: 27%; right: -24%; width: 78vw; transform: none; opacity: 0.67; }
+      .hero::after { top: 120px; right: 14%; height: 250px; }
+      .hero-copy { padding-top: 0; }
+      .hero-title { font-size: clamp(4.8rem, 21vw, 7rem); }
+      .hero-lede { max-width: 330px; font-size: 0.74rem; }
+      .hero-actions { align-items: flex-start; flex-direction: column; gap: 22px; margin-top: 33px; }
+      .hero-index { bottom: 33px; font-size: 0.48rem; }
+      .scroll-cue::after { width: 27px; }
+      .signal-track { gap: 28px; font-size: 0.52rem; }
+      .manifesto-copy h3 { font-size: 2.7rem; }
+      .manifesto-facts { grid-template-columns: 1fr 1fr 1fr; }
+      .manifesto-fact { padding: 17px 10px; }
+      .manifesto-fact strong { font-size: 1.25rem; }
+      .manifesto-fact span { font-size: 0.5rem; }
+      .radio-card { min-height: 410px; }
+      .filter-row { flex-wrap: wrap; margin-top: -14px; }
+      .event-grid { grid-template-columns: 1fr; gap: 10px; }
+      .event-card:last-child { grid-column: auto; }
+      .event-card { min-height: 390px; }
+      .event-art { min-height: 210px; }
+      .timeline-row { grid-template-columns: 75px 1fr; gap: 14px; min-height: 106px; }
+      .timeline-row > span { display: none; }
+      .join { padding: 89px 0; }
+      .join-form { margin-top: 4px; }
+      .footer-top, .footer-bottom { align-items: flex-start; flex-direction: column; }
+      .footer-bottom { gap: 13px; margin-top: 40px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="HORI SHORT SLEEPトップへ"><span class="brand-mark" aria-hidden="true"></span>HORI / SHORT SLEEP</a>
+      <nav class="main-nav" aria-label="メインナビゲーション">
+        <a href="#manifesto">THE IDEA</a>
+        <a href="#signals">METHOD</a>
+        <a href="#field-note">PROFILE</a>
+      </nav>
+      <a class="header-cta" href="#join">CHECK THE SOURCE <span aria-hidden="true">↗</span></a>
+      <button class="menu-button" id="menu-button" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="モバイルナビゲーション">
+      <a href="#manifesto">01 / THE IDEA</a>
+      <a href="#signals">02 / METHOD</a>
+      <a href="#field-note">03 / PROFILE</a>
+      <a href="#join">04 / CHECK THE SOURCE</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-orbit" aria-hidden="true"><div class="hero-core"></div></div>
+      <span class="hero-orbit-label" aria-hidden="true">SLEEP / AWAKE / REPEAT</span>
+      <div class="shell hero-inner">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">SHORT SLEEPER / HORI DAISUKE</p>
+          <h1 class="hero-title" id="hero-title">SHORT<br>SLEEP</h1>
+          <p class="hero-subtitle">時間は、もっと自由になる。(｀・ω・´)</p>
+          <p class="hero-lede">堀大輔さんが長年向き合ってきた「短眠」というテーマ。眠りを削る競争ではなく、時間と体調との向き合い方を考える入口です。 ( ˘ω˘ )</p>
+          <div class="hero-actions"><a class="button" href="#signals">魅力と考え方を読む <span aria-hidden="true">↘</span></a><a class="text-link" href="#join">注意点も確認する <span aria-hidden="true">→</span></a></div>
+        </div>
+      </div>
+      <div class="shell hero-index"><span>HORI DAISUKE / NATURE SLEEP</span><span class="scroll-cue">SCROLL TO DISCOVER</span><span>01 — 04</span></div>
+    </section>
+
+    <div class="signal-band" aria-hidden="true"><div class="signal-track"><span>WAKE UP YOUR TIME</span><span>●</span><span>SHORT SLEEP / BIG CURIOSITY</span><span>✦</span><span>無理はしない ( ˘ω˘ )</span><span>●</span><span>WAKE UP YOUR TIME</span><span>●</span><span>SHORT SLEEP / BIG CURIOSITY</span><span>✦</span><span>無理はしない ( ˘ω˘ )</span><span>●</span></div></div>
+
+    <section class="section manifesto" id="manifesto">
+      <div class="shell">
+        <div class="manifesto-layout">
+          <div class="manifesto-copy reveal">
+            <p class="eyebrow">01 / THE IDEA</p>
+            <h3>眠りを、<em>才能</em>で終わらせない。(｀・ω・´)</h3>
+            <p>堀大輔さんの発信の面白さは、ショートスリーパーを神秘的な才能だけで語らず、睡眠の仕組みや習慣を考えるテーマとして提示しているところ。公式紹介では、18歳から睡眠研究を始め、7年の研究と試行錯誤を経て「Nature sleep」プログラムを開発したとされています。すごい探究心です。(ง •̀_•́)ง</p>
+            <div class="manifesto-facts"><div class="manifesto-fact"><strong>18 →</strong><span>RESEARCH START<br>睡眠研究を始めた年齢</span></div><div class="manifesto-fact"><strong>7 YEARS</strong><span>TRIAL &amp; ERROR<br>研究と試行錯誤の時間</span></div><div class="manifesto-fact"><strong>N.S.</strong><span>NATURE SLEEP<br>堀さんの短眠メソッド</span></div></div>
+          </div>
+          <article class="radio-card reveal" aria-label="ショートスリーパーをイメージしたビジュアル"><div class="radio-top"><span>HORI FILE / 001</span><span>FOCUS</span></div><div class="radio-copy"><strong>WAKE UP<br>YOUR<br>TIME.</strong><p>起きている時間をどう使うか。堀さんの挑戦は、人生の余白を考えるきっかけになる。( ･`ω･´)</p></div><div class="radio-bottom"><span>NATURE SLEEP</span><span>◒ 03:17:42</span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section signals" id="signals">
+      <div class="shell">
+        <div class="section-heading reveal"><div><p class="eyebrow">02 / METHOD</p><h2>短眠の魅力を、<br>3つの角度から。</h2></div><p>堀大輔さんの考え方を、魅力・習慣・安全の3つの視点から読み解きます。(｀・ω・´)</p></div>
+        <div class="filter-row reveal" role="group" aria-label="短眠のテーマを絞り込む"><button class="filter-button active" type="button" data-filter="all">ALL / 03</button><button class="filter-button" type="button" data-filter="idea">IDEA</button><button class="filter-button" type="button" data-filter="practice">PRACTICE</button><button class="filter-button" type="button" data-filter="care">CARE</button></div>
+        <div class="event-grid">
+          <article class="event-card reveal" data-type="idea"><div class="event-art"><span class="event-art-label">THEME 001</span></div><div class="event-info"><div class="event-meta"><span>IDEA</span><span>WHY SHORT?</span></div><h3>時間を、再設計する。</h3><p>眠りをただ削るのではなく、起きている時間をどう生かすか。堀さんの短眠論がくれる、大胆な問いかけです。( ･`ω･´)</p><a class="event-link" href="#manifesto">考え方を読む <span>↗</span></a></div></article>
+          <article class="event-card reveal" data-type="practice"><div class="event-art"><span class="event-art-label">THEME 002</span></div><div class="event-info"><div class="event-meta"><span>PRACTICE</span><span>NATURE SLEEP</span></div><h3>仕組みから、向き合う。</h3><p>寝つき・寝起き・日中の眠気・生活リズム。公式プログラムは、睡眠を一人ひとりの状態から考える設計を掲げています。(ง •̀_•́)ง</p><a class="event-link" href="#field-note">背景を知る <span>↗</span></a></div></article>
+          <article class="event-card reveal" data-type="care"><div class="event-art"><span class="event-art-label">THEME 003</span></div><div class="event-info"><div class="event-meta"><span>CARE</span><span>IMPORTANT</span></div><h3>短くする前に、整える。</h3><p>ショートスリーパーは全員が目指すべき称号ではありません。眠気や不調を我慢せず、自分の睡眠を守ることが最優先です。🤡</p><a class="event-link" href="#join">注意点を確認 <span>↗</span></a></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section field-note" id="field-note">
+      <div class="shell">
+        <div class="field-note-layout">
+          <div class="field-note-copy reveal"><p class="eyebrow">03 / PROFILE</p><h2>堀大輔さんの、<br>面白さを読む。</h2><p>公式プロフィールによれば、音楽、油絵、ギター製作を経て、睡眠研究へ。分野をまたいで仕組みを考え続ける、その探究心こそが魅力です。これはかなり異色です。(ﾟДﾟ)ﾉ</p><a class="text-link" href="https://short-sleeper.or.jp/lecturer/" target="_blank" rel="noreferrer">公式プロフィールを見る <span aria-hidden="true">↗</span></a></div>
+          <div class="timeline reveal"><div class="timeline-row"><time>ORIGIN / 01</time><h3>18歳から、睡眠を研究<span>好奇心 — 仕組みを知りたい</span></h3><span>READ 01:18</span></div><div class="timeline-row"><time>METHOD / 02</time><h3>7年の研究と試行錯誤<span>Nature sleep — 独自理論</span></h3><span>READ 03:45</span></div><div class="timeline-row"><time>WORK / 03</time><h3>学びを、プログラムにする<span>睡眠改善 — 個別サポート</span></h3><span>READ 05:20</span></div><div class="timeline-row"><time>NOW / 04</time><h3>短眠を、問いとして開く<span>発信 — 講演・配信・著書</span></h3><span>READ 07:07</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="join" id="join">
+      <div class="shell join-layout"><div class="join-copy reveal"><p class="eyebrow">04 / CHECK THE SOURCE</p><h2>短眠を、<br>正しく知る。</h2><p>堀大輔さんの考え方に惹かれても、睡眠時間を急に削るのは避けましょう。厚生労働省の「睡眠ガイド2023」では、成人はおおよそ6〜8時間、少なくとも6時間以上の確保が推奨されています。眠気や体調の変化があるときは休むこと。これ大事です。( ˘ω˘ )</p></div><div class="join-form-wrap reveal"><form class="join-form" id="join-form"><label class="sr-only" for="email">メールアドレス</label><input id="email" name="email" type="email" placeholder="your@email.com" required><button type="submit">GET UPDATES ↗</button></form><p class="form-status" id="form-status" role="status" aria-live="polite"></p><p class="source-links"><a href="https://short-sleeper.or.jp/lecturer/" target="_blank" rel="noreferrer">堀大輔さんの公式プロフィール ↗</a><br><a href="https://www.mhlw.go.jp/content/001305530.pdf" target="_blank" rel="noreferrer">厚生労働省 睡眠ガイド2023 ↗</a></p></div></div>
+    </section>
+  </main>
+
+  <footer><div class="shell"><div class="footer-top"><p class="footer-logo">HORI</p><p class="footer-copy">A FAN-MADE INTRODUCTION TO SHORT SLEEP / ISSUE 001</p></div><div class="footer-bottom"><span>© HORI SHORT SLEEP GUIDE</span><span>考える。整える。起きている。</span><a href="#top">BACK TO TOP ↑</a></div></div></footer>
+
+  <script>
+    const header = document.querySelector("#site-header");
+    const menuButton = document.querySelector("#menu-button");
+    const mobileNav = document.querySelector("#mobile-nav");
+    const updateHeader = () => header.classList.toggle("scrolled", window.scrollY > 24);
+    updateHeader();
+    window.addEventListener("scroll", updateHeader, { passive: true });
+
+    menuButton.addEventListener("click", () => {
+      const open = mobileNav.classList.toggle("open");
+      menuButton.setAttribute("aria-expanded", String(open));
+      menuButton.setAttribute("aria-label", open ? "メニューを閉じる" : "メニューを開く");
+    });
+    mobileNav.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => {
+      mobileNav.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
+      menuButton.setAttribute("aria-label", "メニューを開く");
+    }));
+
+    const filterButtons = document.querySelectorAll(".filter-button");
+    const eventCards = document.querySelectorAll(".event-card");
+    filterButtons.forEach((button) => button.addEventListener("click", () => {
+      const filter = button.dataset.filter;
+      filterButtons.forEach((item) => item.classList.toggle("active", item === button));
+      eventCards.forEach((card) => card.classList.toggle("is-hidden", filter !== "all" && card.dataset.type !== filter));
+    }));
+
+    const joinForm = document.querySelector("#join-form");
+    const formStatus = document.querySelector("#form-status");
+    joinForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      formStatus.textContent = "SIGNAL RECEIVED — 一緒に整えていきましょう。(｀・ω・´)";
+      joinForm.reset();
+    });
+
+    const revealItems = document.querySelectorAll(".reveal");
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries, revealObserver) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("visible");
+          revealObserver.unobserve(entry.target);
+        });
+      }, { threshold: 0.12 });
+      revealItems.forEach((item, index) => {
+        item.style.transitionDelay = `${Math.min(index % 5, 4) * 70}ms`;
+        observer.observe(item);
+      });
+    } else {
+      revealItems.forEach((item) => item.classList.add("visible"));
+    }
+  </script>
+</body>
+</html>
