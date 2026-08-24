@@ -114,13 +114,8 @@
     .overview-visual { position: relative; min-height: 455px; padding: 16px; background: var(--red); }
     .overview-visual::before { position: absolute; top: -13px; left: -13px; width: 72px; height: 72px; border-top: 1px solid var(--sand); border-left: 1px solid var(--sand); content: ""; }
     .overview-visual::after { position: absolute; right: -13px; bottom: -13px; width: 72px; height: 72px; border-right: 1px solid var(--sand); border-bottom: 1px solid var(--sand); content: ""; }
-    .overview-visual img { display: block; width: 100%; height: 100%; min-height: 423px; object-fit: cover; object-position: center; filter: saturate(0.84) contrast(1.03); }
+    .overview-visual img { display: block; width: 100%; height: 100%; min-height: 423px; object-fit: cover; object-position: 50% center; filter: saturate(0.84) contrast(1.03); }
     .visual-caption { position: absolute; right: 28px; bottom: 27px; left: 28px; display: flex; justify-content: space-between; gap: 10px; color: white; font-family: Arial, sans-serif; font-size: 0.55rem; letter-spacing: 0.16em; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6); }
-    .fact-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-top: 100px; border: 1px solid var(--line); background: var(--line); }
-    .fact { min-height: 142px; padding: 25px 22px; background: var(--black-soft); }
-    .fact-number { display: block; margin-bottom: 20px; color: var(--red); font-family: Arial, sans-serif; font-size: 0.68rem; letter-spacing: 0.14em; }
-    .fact strong { display: block; margin-bottom: 7px; color: var(--sand-light); font-family: Arial, sans-serif; font-size: 2rem; font-weight: 400; line-height: 0.9; }
-    .fact span { color: var(--muted); font-size: 0.63rem; letter-spacing: 0.08em; }
 
     .experience { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     .experience-card { position: relative; min-height: 290px; padding: 27px; overflow: hidden; border: 1px solid var(--line); background: #0d0d0d; transition: transform 220ms ease, border-color 220ms ease; }
@@ -232,11 +227,11 @@
     .back-top.visible { opacity: 1; pointer-events: auto; }
     .back-top:hover, .back-top:focus-visible { background: var(--red); }
 
-    dialog { width: min(650px, calc(100% - 32px)); padding: 0; border: 1px solid var(--line-red); color: var(--ink); background: #111; box-shadow: 0 25px 100px rgba(0, 0, 0, 0.7); }
+    dialog { width: min(650px, calc(100% - 32px)); max-height: calc(100vh - 32px); overflow: auto; padding: 0; border: 1px solid var(--line-red); color: var(--ink); background: #111; box-shadow: 0 25px 100px rgba(0, 0, 0, 0.7); }
     dialog::backdrop { background: rgba(0, 0, 0, 0.78); backdrop-filter: blur(6px); }
-    .dialog-inner { display: grid; grid-template-columns: 0.83fr 1.17fr; }
-    .dialog-image { min-height: 310px; }
-    .dialog-image img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    .dialog-inner { display: grid; grid-template-columns: 1fr; }
+    .dialog-image { aspect-ratio: 2 / 1; min-height: 0; background: var(--red); }
+    .dialog-image img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
     .dialog-copy { position: relative; padding: 33px 32px; }
     .dialog-close { position: absolute; top: 14px; right: 15px; border: 0; color: var(--muted); background: none; cursor: pointer; font-size: 1.3rem; }
     .dialog-close:hover, .dialog-close:focus-visible { color: var(--red); }
@@ -296,11 +291,6 @@
       .overview-visual { min-height: 300px; padding: 10px; }
       .overview-visual img { min-height: 278px; }
       .visual-caption { right: 17px; bottom: 17px; left: 17px; font-size: 0.48rem; }
-      .fact-grid { grid-template-columns: 1fr 1fr; margin-top: 65px; }
-      .fact { min-height: 122px; padding: 19px 15px; }
-      .fact-number { margin-bottom: 14px; font-size: 0.57rem; }
-      .fact strong { font-size: 1.55rem; }
-      .fact span { font-size: 0.57rem; }
       .experience { grid-template-columns: 1fr; gap: 9px; }
       .experience-card { min-height: 225px; padding: 23px; }
       .experience-number { margin-bottom: 38px; }
@@ -345,8 +335,7 @@
       .footer-bottom > * + * { margin-top: 14px; }
       .credits { max-width: 100%; }
       .back-top { right: 16px; bottom: 17px; }
-      .dialog-inner { grid-template-columns: 1fr; }
-      .dialog-image { height: 230px; min-height: 0; }
+      .dialog-image { height: auto; aspect-ratio: 2 / 1; min-height: 0; }
       .dialog-copy { padding: 25px 23px 29px; }
     }
   </style>
@@ -397,9 +386,8 @@
         <div class="section-rule reveal"></div>
         <div class="overview">
           <div class="reveal"><p class="overview-lead">その男、<br>ただの会社員か。</p><p class="overview-body">丸菱商事の社員・<strong>乃木憂助</strong>は、本来1,000万ドルだった契約金を、何者かの改ざんによって1億ドル――劇中換算で約140億円――送金してしまう。取り戻すべき差額は9,000万ドル、約130億円。送金先のバルカ共和国で爆発事件に巻き込まれた乃木は、公安の野崎守、医師の柚木薫とともに脱出を目指すことになる。</p><div class="case-line">NO SPOILERS / FIRST IMPRESSION</div></div>
-          <figure class="overview-visual reveal"><img src="assets/vivant/intro.webp" alt="VIVANTの登場人物を写した公式ビジュアル"><figcaption class="visual-caption"><span>ARCHIVE / VISUAL 01</span><span>TBS DRAMA</span></figcaption></figure>
+          <figure class="overview-visual reveal"><img src="assets/vivant/ep4_2.jpg" alt="正面を見据える乃木憂助（堺雅人）の場面写真"><figcaption class="visual-caption"><span>OFFICIAL STILL / NOGI</span><span>TBS DRAMA</span></figcaption></figure>
         </div>
-        <div class="fact-grid"><div class="fact reveal"><span class="fact-number">FACT / 01</span><strong>140億円</strong><span>誤送金された1億ドル</span></div><div class="fact reveal"><span class="fact-number">FACT / 02</span><strong>130億円</strong><span>取り戻す差額・約9,000万ドル</span></div><div class="fact reveal"><span class="fact-number">FACT / 03</span><strong>10話</strong><span>第1シーズンの全エピソード</span></div><div class="fact reveal"><span class="fact-number">FACT / 04</span><strong>世界</strong><span>日本とバルカをつなぐ舞台</span></div></div>
       </div>
     </section>
 
@@ -430,7 +418,7 @@
     <section class="section world-section" id="world">
       <div class="wrap">
         <div class="world-layout">
-          <div class="world-copy reveal"><p class="section-kicker">03 <span>/ WORLD</span></p><h2>味方と敵を、<br>簡単に分けない。</h2><p>商社、公安、別班、テント。立場の違う組織が、一つの事件を別々の正義から見つめている。VIVANTの面白さは、誰の視点に立つかで景色が変わること。</p><span class="classified">INTEL / CLASSIFIED</span></div>
+          <div class="world-copy reveal"><p class="section-kicker">03 <span>/ WORLD</span></p><h2>敵か味方か。<br>境界線を疑え。</h2><p>商社、公安、別班、テント。立場の違う組織が、一つの事件を別々の正義から見つめている。VIVANTの面白さは、誰の視点に立つかで景色が変わること。</p><span class="classified">INTEL / CLASSIFIED</span></div>
           <div class="org-list"><article class="org-card reveal" style="--org-color:#c49b63"><span class="org-code">SECTOR 01 / SURFACE</span><h3>丸菱商事</h3><p>乃木が所属する会社。事件はここで起きた「誤送金」から動き出す。</p></article><article class="org-card reveal" style="--org-color:#7199ad"><span class="org-code">SECTOR 02 / PUBLIC</span><h3>公安</h3><p>野崎が所属する組織。国際テロの線から事件を追う。</p></article><article class="org-card reveal" style="--org-color:#e30b10"><span class="org-code">SECTOR 03 / SHADOW</span><h3>別班</h3><p>表に出ない任務を担う、自衛隊直轄の非公認組織。</p></article><article class="org-card reveal" style="--org-color:#9a5b4a"><span class="org-code">SECTOR 04 / UNKNOWN</span><h3>テント</h3><p>世界各地で活動する、謎に包まれた国際テロ組織。</p></article></div>
         </div>
         <div class="spoiler-tools reveal"><button class="spoiler-button" id="spoiler-button" type="button" aria-expanded="false" aria-controls="spoiler-content">CORE INTEL / SHOW <span aria-hidden="true">+</span></button><div class="spoiler-content" id="spoiler-content" hidden><h3>核心情報を表示しています</h3><p>乃木憂助の裏の顔は、自衛隊直轄の非公認組織「別班」の諜報員。追う国際テロ組織「テント」の指導者ノゴーン・ベキは、乃木の生き別れた父親でもある。家族の物語と国家の任務が、同じ一人の男の中で交差する。</p></div></div>
@@ -440,7 +428,7 @@
     <section class="section episode-section" id="episodes">
       <div class="wrap">
         <div class="episode-layout">
-          <div class="episode-copy reveal"><p class="section-kicker">04 <span>/ EPISODES</span></p><h2>10話で、<br>世界の見え方が変わる。</h2><p>第1シーズンの流れを、核心を避けて記録。まずは気になる話数から、そしてできれば最初から。</p><span class="episode-note">EPISODE GUIDE / SPOILER LIGHT</span><div class="episode-visual"><img src="assets/vivant/main.jpg" alt="砂漠に立つVIVANTの登場人物たち"><div class="episode-visual-copy"><strong>THE<br>JOURNEY</strong><span>10 CHAPTERS<br>ONE QUESTION</span></div></div></div>
+          <div class="episode-copy reveal"><p class="section-kicker">04 <span>/ EPISODES</span></p><h2>10話、<br>真実は何度も裏返る。</h2><p>第1シーズンの流れを、核心を避けて記録。まずは気になる話数から、そしてできれば最初から。</p><span class="episode-note">EPISODE GUIDE / SPOILER LIGHT</span><div class="episode-visual"><img src="assets/vivant/main.jpg" alt="砂漠に立つVIVANTの登場人物たち"><div class="episode-visual-copy"><strong>THE<br>JOURNEY</strong><span>10 CHAPTERS<br>ONE QUESTION</span></div></div></div>
           <div class="episode-list">
             <details class="episode reveal" open><summary><span class="episode-number">EP.01</span><span class="episode-title">誤送金</span><span class="episode-tag">THE FIRST SIGNAL</span></summary><p>丸菱商事の乃木は、誤送金された1億ドル（約140億円）を取り戻すためバルカ共和国へ向かう。そこから、予想もしなかった逃走劇が始まる。</p></details>
             <details class="episode reveal"><summary><span class="episode-number">EP.02</span><span class="episode-title">バルカ脱出</span><span class="episode-tag">THE BORDER</span></summary><p>公安の野崎、医師の薫と出会った乃木は、爆発事件と自分にかけられた疑いから逃れようとする。</p></details>
